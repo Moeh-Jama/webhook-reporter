@@ -31,6 +31,6 @@ def get_test_case_status(status: str) -> TestStatus:
         return TestStatus.FAILED
     elif status.startswith("err"):
         return TestStatus.ERROR
-    elif status.startswith("skip"):
+    elif status.startswith("skip") or status.startswith('pend'):
         return TestStatus.SKIPPED
     return TestStatus.UNKNOWN

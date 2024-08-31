@@ -42,7 +42,7 @@ def setup_provider():
     reader = ReaderFactory.get_reader(framework=coverage_format)
     test_report = reader.read(test_results)
     formatter = DiscordFormatter(coverage_report=coverage_report, test_report=test_report)
-    provider = set_provider(provider_name=provider_name, parser=parser)
+    provider = set_provider(provider_name=provider_name)
     return provider, formatter
 
 
