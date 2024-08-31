@@ -22,14 +22,14 @@ class UnsupportedCoverageType(Exception):
         super().__init__(message)
 
     def generate_issue_url(self) -> str:
-        issue_title = "Unsupported Coverage Type"
+        """Generates the Issue with already configured Ticket data."""
+        issue_title = "Unsupported Coverage Format"
         issue_body = (
             f"### Framework: '{self.test_framework}' is not supported\n"
             "Please check the configuration or extend the support for this framework.\n\n"
             "##### Error Details:\n"
             "- Coverage Format: not supported\n"
-            "- Triggered by: `<insert context such as file name, function name>`\n"
-            f"- Steps to Reproduce: `{self.test_framework}`\n\n"
+            "- Triggered by: Parser creation\n"
             "Please look into this at the earliest."
         )
         # Encoding the issue body for url transmission.
