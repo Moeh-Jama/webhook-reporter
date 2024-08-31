@@ -59,7 +59,7 @@ class DiscordFormatter:
 
     def _report_embed(self):
         """Create test report as an embed"""
-        if not self.test_report:
+        if not self.test_report or self._test_report_contains_messages():
             return None
 
         summary: Dict[str, Any] = self.test_report.get_summary()
@@ -84,7 +84,7 @@ class DiscordFormatter:
                 name="webhook-reporter",
                 url="https://github.com/Moeh-Jama/webhook-reporter",
             ),
-            footer=footer
+            footer=footer,
         )
 
     def _threshold_color(self) -> Color:
@@ -94,11 +94,11 @@ class DiscordFormatter:
         if a current coverage is less than coverage by 20% it is highlighted red, else yellow
         """
         env_threshold = float(os.getenv("COVERAGE_THRESHOLD", "0")) / 100.0
-        if self.coverage_report.total_line_rate == None:
+        if not self.coverage_report.total_line_rate:
             return Color.brand_red()
         if env_threshold <= self.coverage_report.total_line_rate:
             return Color.dark_green()
-        elif env_threshold*0.8  > self.coverage_report.total_line_rate:
+        elif env_threshold * 0.8 > self.coverage_report.total_line_rate:
             return Color.brand_red()
         else:
             return Color.yellow()
@@ -132,10 +132,10 @@ class DiscordFormatter:
             )
         )
         return field_metrics
-    
+
     def _format_field_name(self, field: CoverageMetricType) -> str:
         """Gets prettified name"""
-        return field.name.lower().replace('_', ' ').capitalize()
+        return field.name.lower().replace("_", " ").capitalize()
 
     def _test_fields(self, test_report_summary: Dict[str, Any]) -> List[EmbedField]:
         """Fields using TestReport summary attributes"""
@@ -157,16 +157,21 @@ class DiscordFormatter:
         formatted_messages = self._format_test_messages(test_messages)
         return self._format_embed_description(formatted_messages)
 
-
     def _format_test_messages(self, messages: Dict[str, List[str]]) -> str:
         formatted_messages = []
         for test_suite, test_results in messages.items():
             formatted_messages.append(f"__**{test_suite}**__")
             for idx, result in enumerate(test_results, 1):
                 formatted_result = textwrap.dedent(result).strip()
-                formatted_messages.append(f"Test {idx}:\n```py\n{formatted_result}\n```")
+                formatted_messages.append(
+                    f"Test {idx}:\n```py\n{formatted_result}\n```"
+                )
         return "\n".join(formatted_messages)
 
     def _format_embed_description(self, message: str) -> str:
         truncated_message = message[:1997] + "..." if len(message) > 2000 else message
         return f"🧪 Test Results Summary:\n\n{truncated_message}"
+
+    def _test_report_contains_messages(self) -> bool:
+        """checks if failure/error messages exist"""
+        return self.test_report.total_failed > 0 or self.test_report.total_error > 0

@@ -3,6 +3,6 @@
 *.env
 **__pycache__/
 .coverage
-.vscode/*
+.vscode/
 .pylintrc
 data/*
