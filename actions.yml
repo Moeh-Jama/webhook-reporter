@@ -1,6 +1,6 @@
 name: 'Webhook Reporter'
 description: 'Sends coverage and failure reports to various providers like Discord.'
-
+author: Mohamed Jama
 inputs:
   provider:
     description: 'The provider to send reports to (e.g., discord, slack)'
