@@ -43,6 +43,10 @@ class TestSuite:
         self.skipped = sum(
             1 for test in self.tests if test.status == TestStatus.SKIPPED
         )
+    
+    def tests_by_status(self, test_status: TestStatus) -> TestCase:
+        """Returns the tests by status"""
+        return [test for test in self.tests if test.status == test_status]
 
 
 @dataclass
@@ -80,6 +84,13 @@ class TestReport:
                 self.failure_summary[suite.name] = [
                     f"{test.name}: {test.message}" for test in failed_tests
                 ]
+    
+    def get_tests_by_status(self, test_status: TestStatus) -> List[TestCase]:
+        """Returns all tests in all suites that match given test_case"""
+        tests: List[TestCase] = []
+        for suite in self.suites:
+            tests = tests + suite.tests_by_status(test_status=test_status)
+        return tests
 
     def get_slowest_tests(self, n=5) -> List[TestCase]:
         """Returns slowest test cases."""

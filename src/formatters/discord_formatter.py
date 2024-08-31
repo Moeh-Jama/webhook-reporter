@@ -6,7 +6,7 @@ import textwrap
 from typing import Dict, List
 from discord import Any, Color, Embed, EmbedAuthor, EmbedField, EmbedFooter, EmbedMedia
 from src.models.data_reports import NormalisedCoverageData, CoverageMetricType
-from src.models.test_suite import TestReport
+from src.models.test_suite import TestCase, TestReport, TestStatus
 
 
 class DiscordFormatter:
@@ -59,7 +59,7 @@ class DiscordFormatter:
 
     def _report_embed(self):
         """Create test report as an embed"""
-        if not self.test_report or self._test_report_contains_messages():
+        if not self.test_report:
             return None
 
         summary: Dict[str, Any] = self.test_report.get_summary()
@@ -153,9 +153,32 @@ class DiscordFormatter:
         return embed_list
 
     def _test_message(self) -> str:
+        """Test Report metrics"""
+        highlight = self._highlight_tests_message()
         test_messages = self.test_report.failure_summary
         formatted_messages = self._format_test_messages(test_messages)
-        return self._format_embed_description(formatted_messages)
+        return self._format_embed_description(highlight + formatted_messages)
+
+    def _highlight_tests_message(self) -> str:
+        """Returns basic """
+        output = '```'
+
+        output += self._format_lists(title='skipped', tests=self.test_report.get_tests_by_status(test_status=TestStatus.SKIPPED))
+        output += self._format_lists(title='failers', tests=self.test_report.get_tests_by_status(test_status=TestStatus.FAILED))
+        output += self._format_lists(title='errors', tests=self.test_report.get_tests_by_status(test_status=TestStatus.ERROR))
+
+        return output + '```'
+    
+    def _format_lists(self, title: str, tests: List[TestCase]) -> str:
+        if len(tests) == 0:
+            return ''
+        response = title.capitalize() + f"({str(len(tests))})"
+        limit = 4
+        for test in tests[:limit]:
+            response += f"\n\t-{test.name} {test.message[:20] if test.message else ''}"
+        if len(tests) > limit:
+            response += ('\n\t.' * 2)
+        return response + '\n'
 
     def _format_test_messages(self, messages: Dict[str, List[str]]) -> str:
         formatted_messages = []
