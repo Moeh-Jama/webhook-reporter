@@ -2,8 +2,9 @@
 
 import logging
 import os
+import sys
 from dotenv import load_dotenv
-from src.exceptions.configurations import ConfigurationValuesNotFoundError
+from src.exceptions.configurations import ConfigurationValuesNotFoundError, UnsupportedCoverageType
 import asyncio
 from src.formatters.discord_formatter import DiscordFormatter
 from src.parsers.parser_factory import ParserFactory
@@ -32,7 +33,11 @@ def setup_provider():
     except Exception:
         logger.error(f"Error reading the threshold value '{coverage_threshold}' with type '{type(coverage_threshold)}'")
 
-    parser = ParserFactory.get_parser(coverage_format)
+    try:
+        parser = ParserFactory.get_parser(coverage_format)
+    except UnsupportedCoverageType as e:
+        print(e)
+        sys.exit(1)
     coverage_report = parser.parse_and_normalise(coverage_file=coverage_file)
     reader = ReaderFactory.get_reader(framework=coverage_format)
     test_report = reader.read(test_results)
