@@ -19,15 +19,15 @@ def setup_provider():
     # Read all required environment values
     print('os dir', os.listdir('.'))
     print('os.environ', os.environ)
-    provider_name = os.getenv("PROVIDER")
-    webhook_url = os.getenv("WEBHOOK_URL")
-    coverage_format = os.getenv("FRAMEWORK")
-    coverage_file = os.getenv("COVERAGE_FILE")
+    provider_name = os.getenv("INPUT_PROVIDER")
+    webhook_url = os.getenv("INPUT_WEBHOOK_URL")
+    coverage_format = os.getenv("INPUT_FRAMEWORK")
+    coverage_file = os.getenv("INPUT_COVERAGE_FILE")
     # Verify all required configuration fields are present
     if not (provider_name and webhook_url and coverage_file and coverage_file):
         raise ConfigurationValuesNotFoundError
     # Non-required fields are None and handled subsequently.
-    test_results = os.getenv("TEST_RESULTS")
+    test_results = os.getenv("INPUT_TEST_RESULTS")
     coverage_threshold = os.getenv("INPUT_COVERAGE_THRESHOLD")
 
     try:
