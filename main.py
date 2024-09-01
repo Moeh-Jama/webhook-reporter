@@ -18,6 +18,7 @@ def setup_provider():
     """Configuration gathering"""
     # Read all required environment values
     print('os dir', os.listdir('.'))
+    print('os.environ', os.environ)
     provider_name = os.getenv("PROVIDER")
     webhook_url = os.getenv("WEBHOOK_URL")
     coverage_format = os.getenv("FRAMEWORK")
