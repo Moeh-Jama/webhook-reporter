@@ -4,7 +4,7 @@ import os
 from typing import List
 import aiohttp
 from discord import Embed, Webhook
-from src.parsers.schema_parser import SchemaParser
+from config import BOT_IMAGE
 
 
 class DiscordProvider:
@@ -15,7 +15,7 @@ class DiscordProvider:
 
     async def send_report(self, messages: List[Embed]):
         """Send CoverageReport back to Discord"""
-        avatar_url = os.getenv("ICON_URL")
+        avatar_url = BOT_IMAGE
         async with aiohttp.ClientSession() as session:
             webhook = Webhook.from_url(self.webhook_url, session=session)
             await webhook.send(
