@@ -17,15 +17,16 @@ logger = logging.getLogger("webhook-reporter")
 def setup_provider():
     """Configuration gathering"""
     # Read all required environment values
-    provider_name = os.getenv("INPUT_PROVIDER")
-    webhook_url = os.getenv("INPUT_WEBHOOK_URL")
-    coverage_format = os.getenv("INPUT_COVERAGE_FORMAT")
-    coverage_file = os.getenv("INPUT_COVERAGE_FILE")
+    print('os dir', os.listdir('.'))
+    provider_name = os.getenv("PROVIDER")
+    webhook_url = os.getenv("WEBHOOK_URL")
+    coverage_format = os.getenv("FRAMEWORK")
+    coverage_file = os.getenv("COVERAGE_FILE")
     # Verify all required configuration fields are present
     if not (provider_name and webhook_url and coverage_file and coverage_file):
         raise ConfigurationValuesNotFoundError
     # Non-required fields are None and handled subsequently.
-    test_results = os.getenv("INPUT_TEST_RESULTS")
+    test_results = os.getenv("TEST_RESULTS")
     coverage_threshold = os.getenv("INPUT_COVERAGE_THRESHOLD")
 
     try:
