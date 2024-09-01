@@ -10,18 +10,26 @@ class TestStatus(Enum):
     ERROR = auto()
     SKIPPED = auto()
     UNKNOWN = auto()
-    
+
+class TestIcons(Enum):
+    """Gives us the TestStatus to ICON"""
+    PASSED = '✅'
+    FAILED = '❌'
+    ERROR = '⚠️'
+    SKIPPED = '⏭️'
+    UNKNOWN = '❓'
 
 class TestCase:
     """Information on given Test case"""
 
-    def __init__(self, name: str, status: TestStatus, time: str, message: str = None):
+    def __init__(self, name: str, status: TestStatus, time: str, message: str = None, full_message: str = None):
         self.name = name
         self.status = status
         if not time.isalpha():
             self.time = float(time)
         
         self.message = message
+        self.full_message = full_message
 
 
 @dataclass
@@ -113,10 +121,10 @@ class TestReport:
         """Basic string representation"""
         output = ''
         output = f"""Total Tests: {self.total_tests}
-        ✅ Passed: {self.total_passed}
-        ❌ Failed: {self.total_failed}
-        ⚠️ Errors: {self.total_error}
-        ⏭️ Skipped: {self.total_skipped}
+        {TestIcons.PASSED.value} Passed: {self.total_passed}
+        {TestIcons.FAILED.value} Failed: {self.total_failed}
+        {TestIcons.ERROR.value} Errors: {self.total_error}
+        {TestIcons.SKIPPED.value} Skipped: {self.total_skipped}
         -------------------------
         Success Rate: {self.success_rate:.2f}%
         Total Time: {self.total_time:.2f}s"""

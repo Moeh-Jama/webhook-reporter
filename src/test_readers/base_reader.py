@@ -7,6 +7,7 @@ from src.models.test_suite import TestReport
 class BaseTestSuiteReader(ABC):
     """Base reader for all TestSuite files"""
 
+    @abstractmethod
     def read(self, file_path: str) -> TestReport:
         """
             Reads file that contains TestSuite details and returns

@@ -9,14 +9,11 @@ class ConfigurationValuesNotFoundError(Exception):
 
 class UnsupportedCoverageType(Exception):
     """The given coverage is not supported"""
-    def __init__(self, test_framework: str, coverage_schema: str = None):
-        self.test_framework = test_framework
-        self.coverage_schema = coverage_schema
+    def __init__(self):
         self.issue_url = self.generate_issue_url()
 
         # Custom exception message
         message = (
-            f"Framework: '{self.test_framework}' is not supported"
             f"Coverage format not supported! Raise a Ticket here: {self.issue_url}"
         )
         super().__init__(message)
@@ -25,8 +22,9 @@ class UnsupportedCoverageType(Exception):
         """Generates the Issue with already configured Ticket data."""
         issue_title = "Unsupported Coverage Format"
         issue_body = (
-            f"### Framework: '{self.test_framework}' is not supported\n"
+            f"### Framework: '<ENTER TEST FRAMEWORK>' is not supported\n"
             "Please check the configuration or extend the support for this framework.\n\n"
+            "<Please any format and configurations for the test-framework here>\n"
             "##### Error Details:\n"
             "- Coverage Format: not supported\n"
             "- Triggered by: Parser creation\n"
@@ -40,6 +38,42 @@ class UnsupportedCoverageType(Exception):
             f"title={issue_title.replace(' ', '+')}&"
             f"body={issue_body}&"
             "labels=new_coverage_support&"
+            "assignee=Moeh-Jama"
+        )
+
+        return issue_url
+
+class UnsupportedTestReportType(Exception):
+    """Unsupprted framework file type i.e. pytest with test_file='file.txt'"""
+    def __init__(self):
+        self.issue_url = self.generate_issue_url()
+
+        # Custom exception message
+        message = (
+            f"Test Suite format not supported! Raise a Ticket here: {self.issue_url}"
+        )
+        super().__init__(message)
+    
+    def generate_issue_url(self) -> str:
+        """Generates the Issue with already configured Ticket data."""
+        issue_title = "Unsupported Coverage Format"
+        issue_body = (
+            f"### Test File Type '<ADD FILENAME.EXTENSION>' for Framework '<YOUR TESTING FRAMEWORK>' is not supported\n"
+            "Please check the configuration or extend the support for this framework.\n\n"
+            "<Please any format and configurations for the test-framework here>\n"
+            "##### Error Details:\n"
+            "- Test Suite Format: not supported\n"
+            "- Triggered by: Reader creation\n"
+            "Please look into this at the earliest."
+        )
+        # Encoding the issue body for url transmission.
+        issue_body = urllib.parse.quote(issue_body)
+        # Construct the URL to create an issue with pre-filled details
+        issue_url = (
+            f"https://github.com/Moeh-Jama/webhook-reporter/issues/new?"
+            f"title={issue_title.replace(' ', '+')}&"
+            f"body={issue_body}&"
+            "labels=new_test_file_supprot&"
             "assignee=Moeh-Jama"
         )
 

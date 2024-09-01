@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import List
-
+from math import floor
 
 class CoverageType(Enum):
     STANDARD = auto()
@@ -34,6 +34,8 @@ class NormalisedCoverageData:
     total: int = 0
 
     def __post_init__(self):
+        self.total_line_rate  = floor(self.total_line_rate * 100)
+        self.total_branch_rate  = floor(self.total_branch_rate * 100)
         self.total = len(self.files)
         complexity_avg = sum([file.complexity for file in self.files]) /  self.total
         self.complexity_avg = round(complexity_avg, 4) # 0.0000 per DTDs of Schemas

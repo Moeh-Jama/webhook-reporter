@@ -1,0 +1,158 @@
+{
+    "numFailedTestSuites": 1,
+    "numFailedTests": 1,
+    "numPassedTestSuites": 0,
+    "numPassedTests": 6,
+    "numPendingTestSuites": 0,
+    "numPendingTests": 0,
+    "numRuntimeErrorTestSuites": 0,
+    "numTodoTests": 0,
+    "numTotalTestSuites": 1,
+    "numTotalTests": 7,
+    "openHandles": [],
+    "snapshot": {
+        "added": 0,
+        "didUpdate": false,
+        "failure": false,
+        "filesAdded": 0,
+        "filesRemoved": 0,
+        "filesRemovedList": [],
+        "filesUnmatched": 0,
+        "filesUpdated": 0,
+        "matched": 0,
+        "total": 0,
+        "unchecked": 0,
+        "uncheckedKeysByFile": [],
+        "unmatched": 0,
+        "updated": 0
+    },
+    "startTime": 1725810420699,
+    "success": false,
+    "testResults": [
+        {
+            "assertionResults": [
+                {
+                    "ancestorTitles": [
+                        "TaskManager"
+                    ],
+                    "duration": 4,
+                    "failureDetails": [],
+                    "failureMessages": [],
+                    "fullName": "TaskManager should add a new task",
+                    "invocations": 1,
+                    "location": null,
+                    "numPassingAsserts": 3,
+                    "retryReasons": [],
+                    "status": "passed",
+                    "title": "should add a new task"
+                },
+                {
+                    "ancestorTitles": [
+                        "TaskManager"
+                    ],
+                    "duration": 1,
+                    "failureDetails": [
+                        {
+                            "matcherResult": {
+                                "message": "\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoThrow\u001b[2m()\u001b[22m\n\nReceived function did not throw",
+                                "pass": false
+                            }
+                        }
+                    ],
+                    "failureMessages": [
+                        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoThrow\u001b[2m()\u001b[22m\n\nReceived function did not throw\n    at Object.toThrow (D:\\Programming\\webhook-reporter-coverage-creator\\jest-example\\tests\\taskManager.test.js:20:14)\n    at Promise.then.completed (D:\\Programming\\webhook-reporter-coverage-creator\\jest-example\\node_modules\\jest-circus\\build\\utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (D:\\Programming\\webhook-reporter-coverage-creator\\jest-example\\node_modules\\jest-circus\\build\\utils.js:231:10)\n    at _callCircusTest (D:\\Programming\\webhook-reporter-coverage-creator\\jest-example\\node_modules\\jest-circus\\build\\run.js:316:40)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at _runTest (D:\\Programming\\webhook-reporter-coverage-creator\\jest-example\\node_modules\\jest-circus\\build\\run.js:252:3)\n    at _runTestsForDescribeBlock (D:\\Programming\\webhook-reporter-coverage-creator\\jest-example\\node_modules\\jest-circus\\build\\run.js:126:9)\n    at _runTestsForDescribeBlock (D:\\Programming\\webhook-reporter-coverage-creator\\jest-example\\node_modules\\jest-circus\\build\\run.js:121:9)\n    at run (D:\\Programming\\webhook-reporter-coverage-creator\\jest-example\\node_modules\\jest-circus\\build\\run.js:71:3)\n    at runAndTransformResultsToJestFormat (D:\\Programming\\webhook-reporter-coverage-creator\\jest-example\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapterInit.js:122:21)\n    at jestAdapter (D:\\Programming\\webhook-reporter-coverage-creator\\jest-example\\node_modules\\jest-circus\\build\\legacy-code-todo-rewrite\\jestAdapter.js:79:19)\n    at runTestInternal (D:\\Programming\\webhook-reporter-coverage-creator\\jest-example\\node_modules\\jest-runner\\build\\runTest.js:367:16)\n    at runTest (D:\\Programming\\webhook-reporter-coverage-creator\\jest-example\\node_modules\\jest-runner\\build\\runTest.js:444:34)"
+                    ],
+                    "fullName": "TaskManager exception raising for object as title",
+                    "invocations": 1,
+                    "location": null,
+                    "numPassingAsserts": 0,
+                    "retryReasons": [],
+                    "status": "failed",
+                    "title": "exception raising for object as title"
+                },
+                {
+                    "ancestorTitles": [
+                        "TaskManager"
+                    ],
+                    "duration": 1,
+                    "failureDetails": [],
+                    "failureMessages": [],
+                    "fullName": "TaskManager should complete a task",
+                    "invocations": 1,
+                    "location": null,
+                    "numPassingAsserts": 1,
+                    "retryReasons": [],
+                    "status": "passed",
+                    "title": "should complete a task"
+                },
+                {
+                    "ancestorTitles": [
+                        "TaskManager"
+                    ],
+                    "duration": 25,
+                    "failureDetails": [],
+                    "failureMessages": [],
+                    "fullName": "TaskManager should throw an error when completing an already completed task",
+                    "invocations": 1,
+                    "location": null,
+                    "numPassingAsserts": 1,
+                    "retryReasons": [],
+                    "status": "passed",
+                    "title": "should throw an error when completing an already completed task"
+                },
+                {
+                    "ancestorTitles": [
+                        "TaskManager"
+                    ],
+                    "duration": 1,
+                    "failureDetails": [],
+                    "failureMessages": [],
+                    "fullName": "TaskManager should list tasks without showing completed tasks",
+                    "invocations": 1,
+                    "location": null,
+                    "numPassingAsserts": 2,
+                    "retryReasons": [],
+                    "status": "passed",
+                    "title": "should list tasks without showing completed tasks"
+                },
+                {
+                    "ancestorTitles": [
+                        "TaskManager"
+                    ],
+                    "duration": 1,
+                    "failureDetails": [],
+                    "failureMessages": [],
+                    "fullName": "TaskManager should throw an error when adding a task with no title",
+                    "invocations": 1,
+                    "location": null,
+                    "numPassingAsserts": 1,
+                    "retryReasons": [],
+                    "status": "passed",
+                    "title": "should throw an error when adding a task with no title"
+                },
+                {
+                    "ancestorTitles": [
+                        "TaskManager"
+                    ],
+                    "duration": 1,
+                    "failureDetails": [],
+                    "failureMessages": [],
+                    "fullName": "TaskManager should throw an error when deleting a task with an invalid index",
+                    "invocations": 1,
+                    "location": null,
+                    "numPassingAsserts": 1,
+                    "retryReasons": [],
+                    "status": "passed",
+                    "title": "should throw an error when deleting a task with an invalid index"
+                }
+            ],
+            "endTime": 1725810421381,
+            "message": "\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mTaskManager › exception raising for object as title\u001b[39m\u001b[22m\n\n    \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoThrow\u001b[2m()\u001b[22m\n\n    Received function did not throw\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 18 |\u001b[39m         expect(() \u001b[33m=>\u001b[39m {\u001b[22m\n\u001b[2m     \u001b[90m 19 |\u001b[39m             taskManager\u001b[33m.\u001b[39maddTask({\u001b[32m'task_title'\u001b[39m\u001b[33m:\u001b[39m \u001b[32m'new Task'\u001b[39m})\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m    \u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 20 |\u001b[39m           })\u001b[33m.\u001b[39mtoThrow()\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 21 |\u001b[39m     })\u001b[33m;\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 22 |\u001b[39m\u001b[22m\n\u001b[2m     \u001b[90m 23 |\u001b[39m     test(\u001b[32m'should complete a task'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.toThrow (\u001b[22m\u001b[2m\u001b[0m\u001b[36mtests/taskManager.test.js\u001b[39m\u001b[0m\u001b[2m:20:14)\u001b[22m\u001b[2m\u001b[22m\n",
+            "name": "suite_test",
+            "startTime": 1725810420843,
+            "status": "failed",
+            "summary": ""
+        }
+    ],
+    "wasInterrupted": false
+}

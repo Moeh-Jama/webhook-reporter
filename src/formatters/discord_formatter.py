@@ -7,7 +7,7 @@ from typing import Dict, List
 from discord import Any, Color, Embed, EmbedAuthor, EmbedField, EmbedFooter, EmbedMedia
 from config import BOT_IMAGE
 from src.models.data_reports import NormalisedCoverageData, CoverageMetricType
-from src.models.test_suite import TestCase, TestReport, TestStatus
+from src.models.test_suite import TestCase, TestIcons, TestReport, TestStatus
 
 
 class DiscordFormatter:
@@ -112,7 +112,7 @@ class DiscordFormatter:
         field_metrics.append(
             EmbedField(
                 name=self._format_field_name(CoverageMetricType.LINE_COVERAGE),
-                value=str(self.coverage_report.total_line_rate),
+                value=str(self.coverage_report.total_line_rate) + "%",
                 inline=True,
             )
         )
@@ -156,45 +156,52 @@ class DiscordFormatter:
     def _test_message(self) -> str:
         """Test Report metrics"""
         highlight = self._highlight_tests_message()
-        test_messages = self.test_report.failure_summary
-        formatted_messages = self._format_test_messages(test_messages)
-        return self._format_embed_description(highlight + formatted_messages)
+        if highlight:
+            highlight = textwrap.dedent(highlight).strip()
+        return highlight
 
     def _highlight_tests_message(self) -> str:
-        """Returns basic """
-        output = '```'
+        """Creates list of message blocks based on TestStatus with formatted blocks"""
+        output = ""
 
-        output += self._format_lists(title='skipped', tests=self.test_report.get_tests_by_status(test_status=TestStatus.SKIPPED))
-        output += self._format_lists(title='failers', tests=self.test_report.get_tests_by_status(test_status=TestStatus.FAILED))
-        output += self._format_lists(title='errors', tests=self.test_report.get_tests_by_status(test_status=TestStatus.ERROR))
+        skipped = self._format_lists(
+            title="skipped",
+            tests=self.test_report.get_tests_by_status(test_status=TestStatus.SKIPPED),
+        )
+        if skipped:
+            output += TestIcons.SKIPPED.value + skipped
 
-        return output + '```'
-    
+        failures = self._format_lists(
+            title="failures",
+            tests=self.test_report.get_tests_by_status(test_status=TestStatus.FAILED),
+        )
+        if failures:
+            output += TestIcons.FAILED.value + failures
+
+        errors = self._format_lists(
+            title="errors",
+            tests=self.test_report.get_tests_by_status(test_status=TestStatus.ERROR),
+        )
+        if errors:
+            output += TestIcons.ERROR.value + errors
+
+        return (output + "")[:4096] # Max discord embed description size
+
     def _format_lists(self, title: str, tests: List[TestCase]) -> str:
-        if len(tests) == 0:
+        """Returns formatted markdown sections with formatted title section"""
+        if not tests:
             return ''
-        response = title.capitalize() + f"({str(len(tests))})"
-        limit = 4
-        for test in tests[:limit]:
-            response += f"\n\t-{test.name} {test.message[:20] if test.message else ''}"
-        if len(tests) > limit:
-            response += ('\n\t.' * 2)
-        return response + '\n'
-
-    def _format_test_messages(self, messages: Dict[str, List[str]]) -> str:
-        formatted_messages = []
-        for test_suite, test_results in messages.items():
-            formatted_messages.append(f"__**{test_suite}**__")
-            for idx, result in enumerate(test_results, 1):
-                formatted_result = textwrap.dedent(result).strip()
-                formatted_messages.append(
-                    f"Test {idx}:\n```py\n{formatted_result}\n```"
-                )
-        return "\n".join(formatted_messages)
-
-    def _format_embed_description(self, message: str) -> str:
-        truncated_message = message[:1997] + "..." if len(message) > 2000 else message
-        return f"🧪 Test Results Summary:\n\n{truncated_message}"
+        title = f"__**{title.capitalize()}**__ ({len(tests)})"
+        message = "```javascript"
+        for test in tests[:4]:
+            test_msg = test.message or ''
+            test_case_message = ''
+            if test_msg:
+                test_case_message = f"{textwrap.dedent(test_msg).strip()[:250]}:\n"
+                print('message type', type(test_case_message))
+            message += f"\n{test.name.strip()}:\n{test_case_message}"
+        message += "```"
+        return title + "\n" + message
 
     def _test_report_contains_messages(self) -> bool:
         """checks if failure/error messages exist"""

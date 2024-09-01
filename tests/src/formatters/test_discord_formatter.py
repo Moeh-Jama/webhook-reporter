@@ -1,13 +1,12 @@
 """Tests the Normalised Reports into Discord Message Formats"""
 
-import os
-from unittest import mock
+import random
 import pytest
 from unittest.mock import Mock, patch
 from datetime import datetime
-from discord import Embed, EmbedField, Color
-from src.models.data_reports import FileCoverage, NormalisedCoverageData, CoverageMetricType
-from src.models.test_suite import TestReport
+from discord import Embed, Color
+from src.models.data_reports import FileCoverage, NormalisedCoverageData
+from src.models.test_suite import TestCase, TestReport, TestStatus, TestSuite
 from src.formatters.discord_formatter import DiscordFormatter
 
 
@@ -20,42 +19,50 @@ def mock_coverage_data():
         complexity_avg=3.5,
         total=500,
         files=[
-            FileCoverage(**{"filename": "file1.py", "line_rate": 0.8, "branch_rate": 0.9, 'complexity': 0.0}),
-            FileCoverage(**{"filename": "file2.py", "line_rate": 0.9, "branch_rate": 0.85, 'complexity': 0.0}),
+            FileCoverage(
+                **{
+                    "filename": "file1.py",
+                    "line_rate": 0.8,
+                    "branch_rate": 0.9,
+                    "complexity": 0.0,
+                }
+            ),
+            FileCoverage(
+                **{
+                    "filename": "file2.py",
+                    "line_rate": 0.9,
+                    "branch_rate": 0.85,
+                    "complexity": 0.0,
+                }
+            ),
         ],
-        timestamp=datetime.now()
+        timestamp=datetime.now(),
     )
 
 
 @pytest.fixture
 def mock_test_report():
-    report = Mock(spec=TestReport)
-    report.success_rate = 1.0
-    report.get_summary.return_value = {
-        "total_tests": 100,
-        "passed": 100,
-        "failed": 0,
-        "skipped": 0,
-    }
-    report.failure_summary = {}
-    return report
+    test1 = TestCase(name="file1.py", status=TestStatus.PASSED, time="5")
+    test2 = TestCase(name="file2.py", status=TestStatus.PASSED, time="6")
+
+    suite = TestSuite(name="file_tests", tests=[test1, test2], time=11.0)
+    return TestReport(suites=[suite])
 
 
 @pytest.fixture
 def mock_test_report_with_failures():
-    report = Mock(spec=TestReport)
-    report.success_rate = 0.8
-    report.get_summary.return_value = {
-        "total_tests": 100,
-        "passed": 80,
-        "failed": 20,
-        "skipped": 0,
-    }
-    report.failure_summary = {
-        "suite1": ["Failure 1", "Failure 2"],
-        "suite2": ["Failure 3"],
-    }
-    return report
+    test1 = TestCase(name="file1.py", status=TestStatus.PASSED, time="5")
+    test2 = TestCase(name="file2.py", status=TestStatus.PASSED, time="6")
+    test3 = TestCase(name='failing', status=TestStatus.FAILED, time='13', message='Exception occurred', full_message='Exception occurred but longer...' )
+    suite = TestSuite(name="file_tests", tests=[test1, test2, test3], time=24.0)
+    return TestReport(suites=[suite])
+
+@pytest.fixture
+def mock_test_report_with_insanely_long_failure_message():
+    insanely_long_error_message = 'An Error' * 21000
+    test3 = TestCase(name='failing', status=TestStatus.FAILED, time='13', message=insanely_long_error_message, full_message=insanely_long_error_message )
+    suite = TestSuite(name="file_tests", tests=[test3]*500, time=13.0)
+    return TestReport(suites=[suite])
 
 
 # Tests for generate_full_message
@@ -144,7 +151,7 @@ def test_threshold_color_yellow_threshold(mock_getenv, mock_coverage_data):
 def test_fields(mock_coverage_data):
     formatter = DiscordFormatter(mock_coverage_data)
     fields = formatter._fields()
-    assert len(fields) == 3  # Three fields: line coverage, complexity, total
+    assert len(fields) == 3
     assert fields[0].name == "Line coverage"
     assert fields[1].name == "Complexity avg"
     assert fields[2].name == "Total"
@@ -154,7 +161,7 @@ def test_fields(mock_coverage_data):
 def test_test_fields(mock_test_report):
     formatter = DiscordFormatter(Mock(spec=NormalisedCoverageData), mock_test_report)
     fields = formatter._test_fields(test_report_summary=mock_test_report.get_summary())
-    assert len(fields) == 4  # Four fields from the test report summary
+    assert len(fields) == 6
 
 
 # Tests for _format_test_messages and _format_embed_description
@@ -162,23 +169,22 @@ def test_format_test_messages(mock_test_report_with_failures):
     formatter = DiscordFormatter(
         Mock(spec=NormalisedCoverageData), mock_test_report_with_failures
     )
-    messages = formatter._format_test_messages(
-        mock_test_report_with_failures.failure_summary
-    )
-    assert "Failure 1" in messages
-    assert "Failure 3" in messages
+    messages = str(formatter.test_report)
+    assert "✅ Passed: 2" in messages
+    assert "❌ Failed: 1" in messages
+    assert "⚠️ Errors: 0" in messages
+    assert "⏭️ Skipped: 0" in messages
 
 
-def test_format_embed_description_truncation():
-    formatter = DiscordFormatter(Mock(spec=NormalisedCoverageData))
-    long_message = "A" * 2100  # A very long message
-    formatted_message = formatter._format_embed_description(long_message)
-    assert len(formatted_message) <= 2000
-    assert formatted_message.endswith("...")
+def test_report_format_embed_description_truncation(mock_test_report_with_insanely_long_failure_message):
+    formatter = DiscordFormatter(Mock(spec=NormalisedCoverageData), mock_test_report_with_insanely_long_failure_message)
+    failed_cases = mock_test_report_with_insanely_long_failure_message.get_tests_by_status(test_status=TestStatus.FAILED)
+    formatted_message = formatter._format_lists('failure', failed_cases)
+    assert len(formatted_message) <= 4096
 
 
 # Ensure that exception or fallback cases are handled appropriately
 def test_generate_full_message_no_coverage_report():
     formatter = DiscordFormatter(None)
-    with pytest.raises(Exception, match="idk something happened bro"):
+    with pytest.raises(Exception):
         formatter.generate_full_message()

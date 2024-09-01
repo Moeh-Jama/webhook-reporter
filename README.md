@@ -87,7 +87,11 @@ To generate both coverage and test results with Jest:
 ```bash
 jest --coverage --coverageReporters=cobertura --testResultsProcessor=jest-junit
 ```
-### !NOTE lets remove this...
+
+>`Alias: --collectCoverage. Indicates that test coverage information should be collected and reported in the output. Optionally pass <boolean> to override option set in configuration.`
+
+[more information](https://jestjs.io/docs/cli#--coverageproviderprovider)
+##### !NOTE lets remove this...
 Make sure to install `jest-junit` (`npm install --save-dev jest-junit`) and configure it in your `package.json`:
 
 ```json

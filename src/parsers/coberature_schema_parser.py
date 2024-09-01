@@ -10,7 +10,7 @@ from src.parsers.schema_parser import SchemaParser
 from src.models.data_reports import FileCoverage, NormalisedCoverageData
 
 
-class StandardSchemaParser(SchemaParser):
+class CoberatureSchemaParser(SchemaParser):
     def parse_and_normalise(self, coverage_file: str) -> NormalisedCoverageData:
         """parses coverage file and return its normalised object"""
         tree = ET.parse(coverage_file)
@@ -25,7 +25,7 @@ class StandardSchemaParser(SchemaParser):
                 filename = cls.attrib["filename"]
                 line_rate = float(cls.attrib["line-rate"])
                 branch_rate = float(cls.attrib["branch-rate"])
-                complexity = float(cls.attrib["complexity"])
+                complexity = float(cls.attrib.get("complexity", 0))
 
                 file_coverage = FileCoverage(
                     filename=filename,

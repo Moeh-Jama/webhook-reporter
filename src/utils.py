@@ -31,6 +31,15 @@ def get_test_case_status(status: str) -> TestStatus:
         return TestStatus.FAILED
     elif status.startswith("err"):
         return TestStatus.ERROR
-    elif status.startswith("skip") or status.startswith('pend'):
+    elif status.startswith("skip") or status.startswith("pend"):
         return TestStatus.SKIPPED
     return TestStatus.UNKNOWN
+
+
+def truncate_text(text: str, max_length: int = 25) -> str:
+    """Truncate text to maximum length and append an ellipsis if truncated"""
+    if not text:
+        return text
+    if len(text) > max_length:
+        return text[:max_length] + "..."
+    return text

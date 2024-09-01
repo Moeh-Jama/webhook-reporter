@@ -4,7 +4,7 @@ import logging
 import os
 import sys
 from dotenv import load_dotenv
-from src.exceptions.configurations import ConfigurationValuesNotFoundError, UnsupportedCoverageType
+from src.exceptions.configurations import ConfigurationValuesNotFoundError, UnsupportedCoverageType, UnsupportedTestReportType
 import asyncio
 from src.formatters.discord_formatter import DiscordFormatter
 from src.parsers.parser_factory import ParserFactory
@@ -17,17 +17,14 @@ logger = logging.getLogger("webhook-reporter")
 def setup_provider():
     """Configuration gathering"""
     # Read all required environment values
-    print('os dir', os.listdir('.'))
-    print('os.environ', os.environ)
     provider_name = os.getenv("INPUT_PROVIDER")
     webhook_url = os.getenv("INPUT_WEBHOOK_URL")
-    coverage_format = os.getenv("INPUT_FRAMEWORK")
     coverage_file = os.getenv("INPUT_COVERAGE_FILE")
     # Verify all required configuration fields are present
     if not (provider_name and webhook_url and coverage_file and coverage_file):
         raise ConfigurationValuesNotFoundError
     # Non-required fields are None and handled subsequently.
-    test_results = os.getenv("INPUT_TEST_RESULTS")
+    test_file = os.getenv("INPUT_TEST_RESULTS")
     coverage_threshold = os.getenv("INPUT_COVERAGE_THRESHOLD")
 
     try:
@@ -36,13 +33,18 @@ def setup_provider():
         logger.error(f"Error reading the threshold value '{coverage_threshold}' with type '{type(coverage_threshold)}'")
 
     try:
-        parser = ParserFactory.get_parser(coverage_format)
+        parser = ParserFactory.get_parser(coverage_file)
     except UnsupportedCoverageType as e:
         print(e)
         sys.exit(1)
     coverage_report = parser.parse_and_normalise(coverage_file=coverage_file)
-    reader = ReaderFactory.get_reader(framework=coverage_format)
-    test_report = reader.read(test_results)
+    try:
+        reader = ReaderFactory.get_reader(test_file=test_file)
+    except UnsupportedTestReportType as e:
+        print(e)
+        sys.exit(1)
+
+    test_report = reader.read(test_file)
     formatter = DiscordFormatter(coverage_report=coverage_report, test_report=test_report)
     provider = set_provider(provider_name=provider_name)
     return provider, formatter
@@ -56,4 +58,5 @@ def main():
 
 
 if __name__ == "__main__":
+    load_dotenv()
     main()

@@ -1,32 +1,26 @@
 """Parser Factory"""
 
-from src.exceptions.configurations import UnknownCoverageSchema, UnsupportedCoverageType
-from src.parsers.jest_schema_parser import JestCloveredSchemaParser
+from src.exceptions.configurations import UnsupportedCoverageType
+from src.helpers.coverage_xml_identifier import CoverageXmlIdentifier
+from src.models.file_types import CoverageFileType
+from src.parsers.clover_schema_parser import CloverSchemaParser
 from src.parsers.schema_parser import SchemaParser
-from src.parsers.standard_schema_parser import StandardSchemaParser
-from src.utils import process_text_input
-from src.models.data_reports import FRAMEWORK_TO_COVERAGE, CoverageType
+from src.parsers.coberature_schema_parser import CoberatureSchemaParser
 
 
 class ParserFactory:
     """Creates a SchemaParser parser"""
 
     @staticmethod
-    def get_parser(test_framework: str) -> SchemaParser:
+    def get_parser(file_name: str) -> SchemaParser:
         """Returns parser from given test_framework"""
-        test_framework = process_text_input(text=test_framework)
-        coverage_schema = FRAMEWORK_TO_COVERAGE.get(
-            test_framework
-        )  # TODO: add 'detect' instead.
+        file_name = file_name
+        coverage_identifier = CoverageXmlIdentifier(xml_file=file_name)
+        coverage_type = coverage_identifier.identifiy_report()
 
-        if not coverage_schema:
-            raise UnsupportedCoverageType(test_framework)
-
-        if coverage_schema == CoverageType.STANDARD:
-            return StandardSchemaParser()
-        elif coverage_schema == CoverageType.JEST:
-            return JestCloveredSchemaParser()
+        if coverage_type == CoverageFileType.COBERATURE:
+            return CoberatureSchemaParser()
+        elif coverage_type == CoverageFileType.CLOVER:
+            return CloverSchemaParser()
         else:
-            raise UnknownCoverageSchema(
-                f"No parser implemented for schema: {coverage_schema}\ncoverage_format not supported! raise a Ticket on https://github.com/Moeh-Jama/webhook-reporter/issues/new"
-            )
+            raise UnsupportedCoverageType()

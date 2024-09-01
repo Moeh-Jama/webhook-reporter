@@ -10,7 +10,7 @@ from src.models.data_reports import FileCoverage, NormalisedCoverageData
 import xml.etree.ElementTree as ET
 
 
-class JestCloveredSchemaParser(SchemaParser):
+class CloverSchemaParser(SchemaParser):
     """Jest Schema parser"""
 
     def parse_and_normalise(self, coverage_file: str) -> NormalisedCoverageData:

@@ -2,9 +2,6 @@ name: 'Webhook Reporter'
 description: 'Sends coverage and failure reports to various providers like Discord.'
 author: Mohamed Jama
 inputs:
-  framework:
-    description: "Type of testing frame work being used ['pytest', 'jest', ...]"
-    required: true
   coverage_file:
     description: 'Path to the coverage file'
     required: true
@@ -29,7 +26,6 @@ runs:
   image: 'Dockerfile'
   args:
     - ${{ inputs.coverage_file }}
-    - ${{ inputs.framework }}
     - ${{ inputs.provider }}
     - ${{ inputs.test_results }}
     - ${{ inputs.webhook_url }}
