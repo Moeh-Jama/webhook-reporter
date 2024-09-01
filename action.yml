@@ -1,0 +1,29 @@
+name: 'Webhook Reporter'
+description: 'Sends coverage and failure reports to various providers like Discord.'
+author: Mohamed Jama
+inputs:
+  framework:
+    description: "Type of testing frame work being used ['pytest', 'jest', ...]"
+    required: true
+  coverage_file:
+    description: 'Path to the coverage file'
+    required: true
+  provider:
+    description: 'The provider to send the report to (e.g., discord, slack)'
+    required: true
+  webhook_url:
+    description: 'The webhook URL for the provider'
+    required: true
+  test_results:
+    description: "test results file"
+    required: true
+  success_icon_url:
+    description: 'URL for the success icon image'
+    required: false
+  failure_icon_url:
+    description: 'URL for the failure icon image'
+    required: false
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
