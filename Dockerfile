@@ -9,7 +9,6 @@ ENV WEBHOOK_URL=${INPUT_WEBHOOK_URL}
 COPY . /app
 WORKDIR /app
 
-RUN ls -la
 RUN pip install --no-cache-dir -r requirements.txt
 
 
