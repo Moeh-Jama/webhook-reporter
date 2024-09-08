@@ -119,6 +119,7 @@ class TestReport:
 
     def __str__(self) -> str:
         """Basic string representation"""
+        success_rate = round(self.success_rate * 100, 2)
         output = ''
         output = f"""Total Tests: {self.total_tests}
         {TestIcons.PASSED.value} Passed: {self.total_passed}
@@ -126,6 +127,6 @@ class TestReport:
         {TestIcons.ERROR.value} Errors: {self.total_error}
         {TestIcons.SKIPPED.value} Skipped: {self.total_skipped}
         -------------------------
-        Success Rate: {self.success_rate:.2f}%
+        Success Rate: {success_rate}%
         Total Time: {self.total_time:.2f}s"""
         return output

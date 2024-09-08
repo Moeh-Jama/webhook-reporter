@@ -6,6 +6,7 @@ import textwrap
 from typing import Dict, List
 from discord import Any, Color, Embed, EmbedAuthor, EmbedField, EmbedFooter, EmbedMedia
 from config import BOT_IMAGE
+from src.helpers.github_action import GitHubActionInfo
 from src.models.data_reports import NormalisedCoverageData, CoverageMetricType
 from src.models.test_suite import TestCase, TestIcons, TestReport, TestStatus
 
@@ -18,6 +19,7 @@ class DiscordFormatter:
     ):
         self.coverage_report = coverage_report
         self.test_report = test_report
+        self.github_action = GitHubActionInfo()
 
     def generate_full_message(self) -> List[Embed]:
         """Creates Embeds for Coverage Report and Test Report"""
@@ -40,13 +42,13 @@ class DiscordFormatter:
     def _coverage_embed(self) -> Embed:
         """Create coverage report as an Embed"""
         icon_url = BOT_IMAGE
-        thumbnail = EmbedMedia(url=BOT_IMAGE)
+        thumbnail = EmbedMedia(url=self.github_action.actor_profile_img)
         footer = EmbedFooter(text="Notified via Webhook Reporter", icon_url=icon_url)
         message = f"```{(self.test_report)} ```"
         return Embed(
             timestamp=datetime.now(),
-            title="random title",  # LIMIT title Size
-            url="https://example.com",
+            title=self.github_action.event_name,  # LIMIT title Size
+            url=self.github_action.commit_url,
             description=message,
             color=self._threshold_color(),
             thumbnail=thumbnail,
@@ -66,7 +68,7 @@ class DiscordFormatter:
         summary: Dict[str, Any] = self.test_report.get_summary()
 
         icon_url = BOT_IMAGE
-        thumbnail = EmbedMedia(url=BOT_IMAGE)
+        thumbnail = EmbedMedia(url=self.github_action.actor_profile_img)
         footer = EmbedFooter(text="Notified via Webhook Reporter", icon_url=icon_url)
 
         fields = self._test_fields(test_report_summary=summary)
@@ -145,7 +147,8 @@ class DiscordFormatter:
 
             if name in ["failure_summary", "slowest_tests"]:
                 continue
-
+            if name == 'success_rate':
+                value = str(int(value * 100)) + '%'
             embed_field = EmbedField(
                 name=name.replace("_", " ").capitalize(), value=str(value), inline=True
             )
