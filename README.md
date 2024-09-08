@@ -18,7 +18,6 @@ steps:
     with:
       webhook_url: ${{ secrets.WEBHOOK_URL }}
       provider: 'discord'  # or 'slack' or 'teams'
-      framework: 'pytest'  # or 'jacoco', 'cobertura', 'jest'
       coverage_file: 'path/to/coverage.xml'
       test_results_file: 'path/to/test-results.xml'
 ```
@@ -82,6 +81,16 @@ dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 Test results are typically generated automatically in the Visual Studio Test Platform's TRX format.
 
 #### Jest (JavaScript)
+With Jest there are multiple ways to generate tests Per the Istanbul and C8 reporters provided. We currently support the default json and jest-junit reporters.
+
+##### JSON
+To generate the default json coverage and test results you can use the following command:
+```bash
+jest --coverage --json --outputFile=results.json
+```
+For outputFile you can name it anything but please keep it consistent with what you will be providing into the `test_results` field.
+
+##### JUNIT
 To generate both coverage and test results with Jest:
 
 ```bash
@@ -91,9 +100,9 @@ jest --coverage --coverageReporters=cobertura --testResultsProcessor=jest-junit
 >`Alias: --collectCoverage. Indicates that test coverage information should be collected and reported in the output. Optionally pass <boolean> to override option set in configuration.`
 
 [more information](https://jestjs.io/docs/cli#--coverageproviderprovider)
-##### !NOTE lets remove this...
 Make sure to install `jest-junit` (`npm install --save-dev jest-junit`) and configure it in your `package.json`:
 
+###### You can specify the file name and location details inside package.json *like* below:
 ```json
 "jest-junit": {
   "outputDirectory": "./test-results",
@@ -107,10 +116,12 @@ Make sure to install `jest-junit` (`npm install --save-dev jest-junit`) and conf
 |-------|-------------|----------|---------|
 | `webhook_url` | The webhook URL for your messaging platform | Yes | N/A |
 | `provider` | The messaging platform to use (`discord`, `slack`, or `teams`) | Yes | N/A |
-| `framework` | The testing framework used (`pytest`, `jacoco`, `cobertura`, or `jest`) | Yes | N/A |
 | `coverage_file` | Path to the coverage XML file | Yes | N/A |
 | `test_results_file` | Path to the test results XML file | Yes | N/A |
 
+## Support
+The support for webhook-reporter
+| `framework` | The testing framework used (`pytest`, `jacoco`, `cobertura`, or `jest`) | Yes | N/A |
 ## Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
 

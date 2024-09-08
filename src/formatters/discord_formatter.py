@@ -41,13 +41,13 @@ class DiscordFormatter(BaseFormatter):
     def format_coverage(self) -> Embed:
         """Create coverage report as an Embed"""
         icon_url = BOT_IMAGE
-        thumbnail = EmbedMedia(url=BOT_IMAGE)
+        thumbnail = EmbedMedia(url=self.github_action.actor_profile_img)
         footer = EmbedFooter(text="Notified via Webhook Reporter", icon_url=icon_url)
         message = f"```{(self.test_report)} ```"
         return Embed(
             timestamp=datetime.now(),
-            title="random title",  # LIMIT title Size
-            url="https://example.com",
+            title=self.github_action.event_name,  # LIMIT title Size
+            url=self.github_action.reference_link,
             description=message,
             color=self._threshold_color(),
             thumbnail=thumbnail,

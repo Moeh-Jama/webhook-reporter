@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod
 import os
 from config import BOT_IMAGE
+from src.helpers.github_action import GitHubActionInfo
 from src.models.data_reports import NormalisedCoverageData
 from src.models.test_suite import TestReport
 
@@ -17,6 +18,7 @@ class BaseFormatter(ABC):
     ):
         self.coverage_report = coverage_report
         self.test_report = test_report
+        self.github_action = GitHubActionInfo()
         self.MAX_TEST_SHOWN = 4
     
     @abstractmethod

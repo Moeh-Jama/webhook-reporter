@@ -28,6 +28,7 @@ def setup_provider():
     provider_name = os.getenv("INPUT_PROVIDER")
     webhook_url = os.getenv("INPUT_WEBHOOK_URL")
     coverage_file = os.getenv("INPUT_COVERAGE_FILE")
+
     # Verify all required configuration fields are present
     if not (provider_name and webhook_url and coverage_file and coverage_file):
         raise ConfigurationValuesNotFoundError

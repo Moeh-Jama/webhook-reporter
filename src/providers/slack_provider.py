@@ -11,10 +11,6 @@ class SlackProvider(Baseprovider):
     async def send_report(self, messages: SlackMessage):
         """Send Coverage report back to Slack"""
         webhook = WebhookClient(self.webhook_url)
-        import json
-        f = open('example_slack_message.json', 'w', encoding='utf-8')
-        json.dump(messages, f)
-        f.close()
         response = webhook.send(
             text='Test and Coverage Report',
             blocks=messages

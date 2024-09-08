@@ -15,20 +15,8 @@ class DiscordProvider(Baseprovider):
         avatar_url = BOT_IMAGE
         async with aiohttp.ClientSession() as session:
             webhook = Webhook.from_url(self.webhook_url, session=session)
-            dics = [msg.to_dict() for msg in messages]
-            msg = {
-                "content": "format 2",
-                "embeds": dics,
-                "username": "webhook-reporter",
-                "avatar_url": avatar_url,
-            }
-            import json
-
-            f = open("example_discord_message", "w", encoding="utf-8")
-            json.dump(msg, f)
-            f.close()
             try:
-                r = await webhook.send(
+                await webhook.send(
                     "format 2",
                     embeds=messages,
                     username="webhook-reporter",
