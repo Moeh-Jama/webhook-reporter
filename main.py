@@ -28,7 +28,12 @@ def setup_provider():
     print('GITHUB_PATH', os.getenv('GITHUB_PATH', 'unknown'))
     print('GITHUB_JOB', os.getenv('GITHUB_JOB', 'unknown'))
     print('GITHUB_REF', os.getenv('GITHUB_REF', 'unknown'))
-    print('GITHUB_SHA', os.getenv('GITHUB_SHA', 'unknown'))
+    print('-'*52)
+    print('GITHUB_REF_TYPE', os.getenv('GITHUB_REF_TYPE', 'unknown'))
+    print('GITHUB_EVENT_PATH', os.getenv('GITHUB_EVENT_PATH', 'unknown'))
+    print('GITHUB_OUTPUT', os.getenv('GITHUB_OUTPUT', 'unknown'))
+    print('GITHUB_TRIGGERING_ACTOR', os.getenv('GITHUB_TRIGGERING_ACTOR', 'unknown'))
+    print('GITHUB_BASE_REF', os.getenv('GITHUB_BASE_REF', 'unknown'))
     # Verify all required configuration fields are present
     if not (provider_name and webhook_url and coverage_file and coverage_file):
         raise ConfigurationValuesNotFoundError

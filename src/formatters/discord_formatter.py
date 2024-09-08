@@ -48,7 +48,7 @@ class DiscordFormatter:
         return Embed(
             timestamp=datetime.now(),
             title=self.github_action.event_name,  # LIMIT title Size
-            url=self.github_action.commit_url,
+            url=self.github_action.reference_link,
             description=message,
             color=self._threshold_color(),
             thumbnail=thumbnail,

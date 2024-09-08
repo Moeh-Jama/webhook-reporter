@@ -23,5 +23,11 @@ class GitHubActionInfo:
         return f"https://github.com/{self.repo}/actions/runs/{self.run_id}"
     
     @property
+    def reference_link(self):
+        """The link associated with this action run"""
+        ref = self.ref.split('refs/')[-1]
+        return f"https://github.com/{self.repo}/{ref}"
+    
+    @property
     def actor_profile_img(self):
         return f"https://avatars.githubusercontent.com/u/{self.actor_id}"
