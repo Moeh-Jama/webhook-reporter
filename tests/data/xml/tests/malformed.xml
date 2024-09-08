@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<coverage line-rate="0.85" branch-rate="0.75" timestamp="1628472326">
+    <packages>
+        <package>
+            <classes>
+                <class filename="file1.py" line-rate="0.9" branch-rate="0.8" complexity="2.5" />
+                <!-- Missing closing tags or malformed content -->
+            </classes>
+        </package>
+    </packages>
+</coverage

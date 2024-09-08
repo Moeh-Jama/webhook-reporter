@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<coverage>
+    <packages>
+        <package>
+            <classes>
+                <class filename="file1.py" />
+            </classes>
+        </package>
+    </packages>
+</coverage>

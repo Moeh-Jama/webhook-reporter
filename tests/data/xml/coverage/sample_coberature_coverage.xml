@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<coverage line-rate="0.9" branch-rate="0.75" version="1.9" timestamp="1187350905008">
+    <packages>
+        <package>
+            <classes>
+                <class filename="file1.py" line-rate="0.9" branch-rate="0.8" complexity="2.5" />
+                <class filename="file2.py" line-rate="0.7" branch-rate="0.6" complexity="1.5" />
+            </classes>
+        </package>
+    </packages>
+</coverage>

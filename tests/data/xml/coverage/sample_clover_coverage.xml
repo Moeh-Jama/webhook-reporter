@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1725112165369" clover="3.2.0">
+    <project timestamp="1725112165369" name="All files">
+        <metrics statements="12" coveredstatements="4" conditionals="6" coveredconditionals="0"
+            methods="4" coveredmethods="3" elements="22" coveredelements="7" complexity="0" loc="12"
+            ncloc="12" packages="1" files="2" classes="2" />
+        <file name="math.js"
+            path="D:\Programming\webhook-reporter-coverage-creator\jest-coverage-example\src\math.js">
+            <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0"
+                methods="3" coveredmethods="3" />
+            <line num="4" count="1" type="stmt" />
+            <line num="8" count="1" type="stmt" />
+            <line num="12" count="1" type="stmt" />
+            <line num="15" count="1" type="stmt" />
+        </file>
+        <file name="registration.js"
+            path="D:\Programming\webhook-reporter-coverage-creator\jest-coverage-example\src\registration.js">
+            <metrics statements="8" coveredstatements="0" conditionals="6" coveredconditionals="0"
+                methods="1" coveredmethods="0" />
+            <line num="4" count="0" type="cond" truecount="0" falsecount="2" />
+            <line num="5" count="0" type="stmt" />
+            <line num="7" count="0" type="cond" truecount="0" falsecount="2" />
+            <line num="8" count="0" type="stmt" />
+            <line num="10" count="0" type="cond" truecount="0" falsecount="2" />
+            <line num="11" count="0" type="stmt" />
+            <line num="14" count="0" type="stmt" />
+            <line num="15" count="0" type="stmt" />
+        </file>
+    </project>
+</coverage>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuite name="pytest" errors="0" failures="0" skipped="1" tests="2" time="3.525"
+    timestamp="2024-08-22T22:27:25.541115" hostname="DESKTOP-WEWEWEWE">
+    <testcase classname="test.random.Service"
+        name="test_adds" time="0.002">
+    </testcase>
+    <testcase
+        classname="test.random.Service2"
+        name="test_adds2" time="0.664" />
+</testsuite>
