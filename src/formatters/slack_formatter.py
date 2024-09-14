@@ -16,8 +16,16 @@ class SlackFormatter(BaseFormatter):
         test_report_section = self.format_test_report()
 
         blocks = [
-            self._header_block(":rocket: Test and Coverage Report"),
+            self._header_block(text=':rocket: Test and Coverage Report'),
+            {
+                'type': 'section',
+                'text': {
+                    'type': 'mrkdwn',
+                    'text': f"<{self.github_action.reference_link}|{self.github_action.event_name}>"
+                }
+            }
         ]
+
 
         if coverage_section:
             blocks.extend(coverage_section)
@@ -43,7 +51,7 @@ class SlackFormatter(BaseFormatter):
 
     def format_coverage(self) -> List[Dict[str, Any]]:
         """Generate the Coverage Section"""
-
+        section = []
         coverage_color = self._get_coverage_color()
         fields = [
             {
@@ -59,20 +67,37 @@ class SlackFormatter(BaseFormatter):
                 "text": f"*Total:*\n{self.coverage_report.total}",
             },
         ]
+
         if self.test_report:
-            fields += self._test_fields(test_report_summary=self.test_report.get_summary())
-        return [
-            {
-                "type": "section",
-                "fields": fields,
-            },
+            fields += self._test_fields(
+                test_report_summary=self.test_report.get_summary()
+            )
+
+        section.append(
+            {"type": "section", "fields": fields, "accessory": self._action_image()}
+        )
+
+        coverage_status = (
             {
                 "type": "context",
                 "elements": [
                     {"type": "mrkdwn", "text": f"Coverage Status: {coverage_color}"}
                 ],
             },
-        ]
+        )
+
+        section.extend(coverage_status)
+
+        return section
+
+    def _action_image(self) -> Dict[str, str | Dict[str, str]]:
+        """Returns the associated image of the given triggered action"""
+        return {
+            "type": "image",
+            "image_url": self.github_action.actor_profile_img,
+            "alt_text": "alt git_action_image for image",
+        }
+
     def _coverage_fields(self) -> List[Dict[str, str]]:
         """The coverage summary fields like Passed, Failed, etc..."""
         pass
