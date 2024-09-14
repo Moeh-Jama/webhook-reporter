@@ -1,6 +1,3 @@
-
-
-
 from enum import Enum, auto
 
 
@@ -9,7 +6,9 @@ class CoverageFileType(Enum):
     COBERATURE = auto()
     JACOCO = auto()
 
+
 class TestSuiteFileType(Enum):
-    JUNIT = 'JUnit'
-    TESTNG = 'TestNG'
-    NUNIT = 'NUnit'
+    __test__ = False
+    JUNIT = "JUnit"
+    TESTNG = "TestNG"
+    NUNIT = "NUnit"

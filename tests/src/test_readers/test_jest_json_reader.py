@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.models.test_suite import TestStatus
+from src.models.test_suite import TestResult
 from src.test_readers.jest_reader import JestJSONReader
 
 
@@ -56,5 +56,5 @@ def test_report_generation_with_fail():
         == "exception raising for object as title: Error: expect(received).toThrow()\n\nReceived functi..."
     )
 
-    failures = test_report.get_tests_by_status(test_status=TestStatus.FAILED)
+    failures = test_report.get_tests_by_status(test_status=TestResult.FAILED)
     assert len(failures) == 1

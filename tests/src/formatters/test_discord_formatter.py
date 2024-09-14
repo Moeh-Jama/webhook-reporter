@@ -1,12 +1,11 @@
 """Tests the Normalised Reports into Discord Message Formats"""
 
-import random
 import pytest
 from unittest.mock import Mock, patch
 from datetime import datetime
 from discord import Embed, Color
 from src.models.data_reports import FileCoverage, NormalisedCoverageData
-from src.models.test_suite import TestCase, TestReport, TestStatus, TestSuite
+from src.models.test_suite import TestCase, TestReport, TestResult, TestSuite
 from src.formatters.discord_formatter import DiscordFormatter
 
 
@@ -42,8 +41,8 @@ def mock_coverage_data():
 
 @pytest.fixture
 def mock_test_report():
-    test1 = TestCase(name="file1.py", status=TestStatus.PASSED, time="5")
-    test2 = TestCase(name="file2.py", status=TestStatus.PASSED, time="6")
+    test1 = TestCase(name="file1.py", status=TestResult.PASSED, time="5")
+    test2 = TestCase(name="file2.py", status=TestResult.PASSED, time="6")
 
     suite = TestSuite(name="file_tests", tests=[test1, test2], time=11.0)
     return TestReport(suites=[suite])
@@ -51,17 +50,30 @@ def mock_test_report():
 
 @pytest.fixture
 def mock_test_report_with_failures():
-    test1 = TestCase(name="file1.py", status=TestStatus.PASSED, time="5")
-    test2 = TestCase(name="file2.py", status=TestStatus.PASSED, time="6")
-    test3 = TestCase(name='failing', status=TestStatus.FAILED, time='13', message='Exception occurred', full_message='Exception occurred but longer...' )
+    test1 = TestCase(name="file1.py", status=TestResult.PASSED, time="5")
+    test2 = TestCase(name="file2.py", status=TestResult.PASSED, time="6")
+    test3 = TestCase(
+        name="failing",
+        status=TestResult.FAILED,
+        time="13",
+        message="Exception occurred",
+        full_message="Exception occurred but longer...",
+    )
     suite = TestSuite(name="file_tests", tests=[test1, test2, test3], time=24.0)
     return TestReport(suites=[suite])
 
+
 @pytest.fixture
 def mock_test_report_with_insanely_long_failure_message():
-    insanely_long_error_message = 'An Error' * 21000
-    test3 = TestCase(name='failing', status=TestStatus.FAILED, time='13', message=insanely_long_error_message, full_message=insanely_long_error_message )
-    suite = TestSuite(name="file_tests", tests=[test3]*500, time=13.0)
+    insanely_long_error_message = "An Error" * 21000
+    test3 = TestCase(
+        name="failing",
+        status=TestResult.FAILED,
+        time="13",
+        message=insanely_long_error_message,
+        full_message=insanely_long_error_message,
+    )
+    suite = TestSuite(name="file_tests", tests=[test3] * 500, time=13.0)
     return TestReport(suites=[suite])
 
 
@@ -83,8 +95,11 @@ def test_generate_full_message_no_test_report(mock_coverage_data):
 
 def test_generate_full_message_no_coverage_embed(mock_coverage_data, mock_test_report):
     formatter = DiscordFormatter(mock_coverage_data, mock_test_report)
-    with patch.object(DiscordFormatter, "_coverage_embed", return_value=None):
-        with pytest.raises(Exception, match="idk something happened bro"):
+    with patch.object(DiscordFormatter, "format_coverage", return_value=None):
+        with pytest.raises(
+            Exception,
+            match="Coverage embed failed to generate. Check the coverage report data.",
+        ):
             formatter.generate_full_message()
 
 
@@ -176,10 +191,20 @@ def test_format_test_messages(mock_test_report_with_failures):
     assert "⏭️ Skipped: 0" in messages
 
 
-def test_report_format_embed_description_truncation(mock_test_report_with_insanely_long_failure_message):
-    formatter = DiscordFormatter(Mock(spec=NormalisedCoverageData), mock_test_report_with_insanely_long_failure_message)
-    failed_cases = mock_test_report_with_insanely_long_failure_message.get_tests_by_status(test_status=TestStatus.FAILED)
-    formatted_message = formatter._format_lists('failure', failed_cases)
+def test_report_format_embed_description_truncation(
+    mock_test_report_with_insanely_long_failure_message,
+):
+    formatter = DiscordFormatter(
+        Mock(spec=NormalisedCoverageData),
+        mock_test_report_with_insanely_long_failure_message,
+    )
+    failed_cases = (
+        mock_test_report_with_insanely_long_failure_message.get_tests_by_status(
+            test_status=TestResult.FAILED
+        )
+    )
+
+    formatted_message = formatter.get_test_summary_message()
     assert len(formatted_message) <= 4096
 
 

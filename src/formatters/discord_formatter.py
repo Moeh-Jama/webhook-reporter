@@ -1,34 +1,35 @@
 """All discord related view information"""
 
 from datetime import datetime
-import os
 import textwrap
 from typing import Dict, List
 from discord import Any, Color, Embed, EmbedAuthor, EmbedField, EmbedFooter, EmbedMedia
 from config import BOT_IMAGE
-from src.models.data_reports import NormalisedCoverageData, CoverageMetricType
-from src.models.test_suite import TestCase, TestIcons, TestReport, TestStatus
+from src.formatters.base_formatter import BaseFormatter
+from src.formatters.utils.format_markdown import (
+    generate_test_summary_by_status,
+)
+from src.models.data_reports import CoverageMetricType
+
+MAX_DISCORD_EMBED_SIZE = 4096
+IGNORED_FIELDS = ["failure_summary", "slowest_tests"]
 
 
-class DiscordFormatter:
+class DiscordFormatter(BaseFormatter):
     """Formats the Coverage & Tests reports into Discord Message format"""
-
-    def __init__(
-        self, coverage_report: NormalisedCoverageData, test_report: TestReport = None
-    ):
-        self.coverage_report = coverage_report
-        self.test_report = test_report
 
     def generate_full_message(self) -> List[Embed]:
         """Creates Embeds for Coverage Report and Test Report"""
-        coverage_embed = self._coverage_embed()
-        test_report_embed = self._report_embed()
+        coverage_embed = self.format_coverage()
+        test_report_embed = self.format_test_report()
         embeds: List[Embed] = []
 
         if coverage_embed:
             embeds.append(coverage_embed)
         else:
-            raise Exception("idk something happened bro")  # TODO: lets fix this later
+            raise ValueError(
+                "Coverage embed failed to generate. Check the coverage report data."
+            )
 
         if test_report_embed:
             embeds.append(test_report_embed)
@@ -37,7 +38,7 @@ class DiscordFormatter:
 
         return embeds
 
-    def _coverage_embed(self) -> Embed:
+    def format_coverage(self) -> Embed:
         """Create coverage report as an Embed"""
         icon_url = BOT_IMAGE
         thumbnail = EmbedMedia(url=BOT_IMAGE)
@@ -58,26 +59,26 @@ class DiscordFormatter:
             footer=footer,
         )
 
-    def _report_embed(self):
+    def format_test_report(self):
         """Create test report as an embed"""
         if not self.test_report:
             return None
 
         summary: Dict[str, Any] = self.test_report.get_summary()
 
-        icon_url = BOT_IMAGE
         thumbnail = EmbedMedia(url=BOT_IMAGE)
-        footer = EmbedFooter(text="Notified via Webhook Reporter", icon_url=icon_url)
+        footer = self.format_footer()
 
         fields = self._test_fields(test_report_summary=summary)
         color_status = Color.brand_green()
+
         if self.test_report.success_rate < 1:
             color_status = Color.brand_red()
         return Embed(
             timestamp=datetime.now(),
             title="Test Report",
             url="",
-            description=self._test_message(),
+            description=self.get_test_summary_message(),
             color=color_status,
             thumbnail=thumbnail,
             fields=fields,
@@ -88,21 +89,22 @@ class DiscordFormatter:
             footer=footer,
         )
 
-    def _threshold_color(self) -> Color:
-        """
-        Returns color value based on threshold or default of 0.8
+    def format_footer(self) -> EmbedFooter:
+        """Returns the discord footer"""
+        footer_info = self._get_footer()
+        return EmbedFooter(
+            text=footer_info["message"], icon_url=footer_info["icon_url"]
+        )
 
-        if a current coverage is less than coverage by 20% it is highlighted red, else yellow
-        """
-        env_threshold = float(os.getenv("COVERAGE_THRESHOLD", "0")) / 100.0
-        if not self.coverage_report.total_line_rate:
-            return Color.brand_red()
-        if env_threshold <= self.coverage_report.total_line_rate:
+    def _threshold_color(self) -> Color:
+        """Gets the Color based on coverage status."""
+        status = self.calculate_coverage_status()
+
+        if status == "good":
             return Color.dark_green()
-        elif env_threshold * 0.8 > self.coverage_report.total_line_rate:
-            return Color.brand_red()
-        else:
+        elif status == "needs_improvement":
             return Color.yellow()
+        return Color.brand_red()
 
     def _fields(self) -> List[EmbedField]:
         """Returns all Embed fields based on given coverage_report"""
@@ -142,8 +144,7 @@ class DiscordFormatter:
         """Fields using TestReport summary attributes"""
         embed_list: List[EmbedField] = []
         for name, value in test_report_summary.items():
-
-            if name in ["failure_summary", "slowest_tests"]:
+            if name in IGNORED_FIELDS:
                 continue
 
             embed_field = EmbedField(
@@ -153,55 +154,26 @@ class DiscordFormatter:
 
         return embed_list
 
-    def _test_message(self) -> str:
-        """Test Report metrics"""
-        highlight = self._highlight_tests_message()
+    def get_test_summary_message(self) -> str:
+        """Generates a summary message for test report metrics.
+
+        Uses the `generate_test_summary_by_status` utility function to create a markdown-formatted
+        summary of the test report's statuses (skipped, failed, errors). Cleans up any indentation
+        from the resulting markdown string.
+
+        Returns:
+            str: The cleaned markdown-formatted test summary message.
+        """
+        # Generate the test summary highlight
+        highlight = generate_test_summary_by_status(
+            test_report=self.test_report, markdown_style="javascript"
+        )
+
+        # Remove unnecessary indentation
         if highlight:
-            highlight = textwrap.dedent(highlight).strip()
+            highlight = textwrap.dedent(highlight)
+
         return highlight
-
-    def _highlight_tests_message(self) -> str:
-        """Creates list of message blocks based on TestStatus with formatted blocks"""
-        output = ""
-
-        skipped = self._format_lists(
-            title="skipped",
-            tests=self.test_report.get_tests_by_status(test_status=TestStatus.SKIPPED),
-        )
-        if skipped:
-            output += TestIcons.SKIPPED.value + skipped
-
-        failures = self._format_lists(
-            title="failures",
-            tests=self.test_report.get_tests_by_status(test_status=TestStatus.FAILED),
-        )
-        if failures:
-            output += TestIcons.FAILED.value + failures
-
-        errors = self._format_lists(
-            title="errors",
-            tests=self.test_report.get_tests_by_status(test_status=TestStatus.ERROR),
-        )
-        if errors:
-            output += TestIcons.ERROR.value + errors
-
-        return (output + "")[:4096] # Max discord embed description size
-
-    def _format_lists(self, title: str, tests: List[TestCase]) -> str:
-        """Returns formatted markdown sections with formatted title section"""
-        if not tests:
-            return ''
-        title = f"__**{title.capitalize()}**__ ({len(tests)})"
-        message = "```javascript"
-        for test in tests[:4]:
-            test_msg = test.message or ''
-            test_case_message = ''
-            if test_msg:
-                test_case_message = f"{textwrap.dedent(test_msg).strip()[:250]}:\n"
-                print('message type', type(test_case_message))
-            message += f"\n{test.name.strip()}:\n{test_case_message}"
-        message += "```"
-        return title + "\n" + message
 
     def _test_report_contains_messages(self) -> bool:
         """checks if failure/error messages exist"""

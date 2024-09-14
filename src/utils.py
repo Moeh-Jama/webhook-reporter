@@ -1,15 +1,17 @@
 """Utilities module for Parse/Provider logics"""
 
-from src.models.test_suite import TestStatus
-from src.parsers.schema_parser import SchemaParser
+from src.models.test_suite import TestResult
 from src.providers.discord_provider import DiscordProvider
+from src.providers.slack_provider import SlackProvider
 
 
-def set_provider(provider_name: str) -> DiscordProvider:
+def set_provider(provider_name: str) -> DiscordProvider | SlackProvider:
     """Returns the Provider based on provider name"""
     provider_name = process_text_input(text=provider_name)
     if provider_name == "discord":
         return DiscordProvider()
+    elif provider_name == "slack":
+        return SlackProvider()
     else:
         raise Exception(
             f"Provider {provider_name} is not supported! raise a ticket on https://github.com/Moeh-Jama/webhook-reporter/issues/new"
@@ -22,18 +24,18 @@ def process_text_input(text: str) -> str:
     return text
 
 
-def get_test_case_status(status: str) -> TestStatus:
-    """Returns the TestStatus from given status as string"""
+def get_test_case_status(status: str) -> TestResult:
+    """Returns the TestResult from given status as string"""
     status = status.lower().strip()
     if status.startswith("pass"):
-        return TestStatus.PASSED
+        return TestResult.PASSED
     elif status.startswith("fail"):
-        return TestStatus.FAILED
+        return TestResult.FAILED
     elif status.startswith("err"):
-        return TestStatus.ERROR
+        return TestResult.ERROR
     elif status.startswith("skip") or status.startswith("pend"):
-        return TestStatus.SKIPPED
-    return TestStatus.UNKNOWN
+        return TestResult.SKIPPED
+    return TestResult.UNKNOWN
 
 
 def truncate_text(text: str, max_length: int = 25) -> str:
