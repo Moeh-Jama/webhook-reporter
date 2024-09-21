@@ -3,6 +3,7 @@
 import logging
 import os
 import sys
+from typing import Tuple
 from dotenv import load_dotenv
 from src.exceptions.configurations import (
     ConfigurationValuesNotFoundError,
@@ -10,18 +11,18 @@ from src.exceptions.configurations import (
     UnsupportedTestReportType,
 )
 import asyncio
-from src.formatters.discord_formatter import DiscordFormatter
-from src.formatters.slack_formatter import SlackFormatter
+from src.formatters.base_formatter import BaseFormatter
 from src.logger import setup_logging
 from src.parsers.parser_factory import ParserFactory
+from src.providers.base_provider import Baseprovider
 from src.test_readers.reader_factory import ReaderFactory
-from src.utils import set_provider
+from src.utils import set_formatter, set_provider
 
 setup_logging()
 logger = logging.getLogger("webhook-reporter-logger")
 
 
-def setup_provider():
+def setup_provider() -> Tuple[Baseprovider, BaseFormatter]:
     """Configuration gathering"""
     # Read all required environment values
     logger.debug("fetching Webhook configuration data")
@@ -61,15 +62,7 @@ def setup_provider():
     test_report = reader.read(test_file)
     logger.debug("Test Suites report parsed")
 
-    formatter: DiscordFormatter | SlackFormatter = None
-    if provider_name == "discord":
-        formatter = DiscordFormatter(
-            coverage_report=coverage_report, test_report=test_report
-        )
-    elif provider_name == "slack":
-        formatter = SlackFormatter(
-            coverage_report=coverage_report, test_report=test_report
-        )
+    formatter: BaseFormatter = set_formatter(provider_name=provider_name, coverage_report=coverage_report, test_report=test_report)
     provider = set_provider(provider_name=provider_name)
     logger.debug("Webhook configured")
     return provider, formatter
@@ -79,6 +72,8 @@ def main():
     """Reads the coverage file"""
     provider, formatter = setup_provider()
     message = formatter.generate_full_message()
+
+    logger.info("Sending report via webhook")
     asyncio.run(provider.send_report(messages=message))
 
 

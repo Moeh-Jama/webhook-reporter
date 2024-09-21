@@ -118,7 +118,8 @@ class SlackFormatter(BaseFormatter):
 
         return sections
 
-    def _highlight_tests_message2(self) -> str:
+    def _highlight_tests_message(self) -> str:
+        """Creates list of message blocks based on TestResult with formatted blocks"""
         output = ""
 
         for status, icon in [
@@ -129,51 +130,16 @@ class SlackFormatter(BaseFormatter):
             tests = self.test_report.get_tests_by_status(test_status=status)
             if tests:
                 title = f"{icon} *{status.name.capitalize()}* ({len(tests)})"
-                output += f"{title}\n"
-                for test in tests[: self.MAX_TEST_SHOWN]:
-                    test_msg = test.message or ""
-                    test_case_message = (
-                        f"{textwrap.dedent(test_msg).strip()[:250]}" if test_msg else ""
-                    )
-                    output += f"• `{test.name.strip()}`: {test_case_message}\n"
-                output += "\n"
+                output += self._format_lists(title=title, tests=tests)
 
         return output.strip()
-
-    def _highlight_tests_message(self) -> str:
-        """Creates list of message blocks based on TestResult with formatted blocks"""
-        output = ""
-
-        skipped = self._format_lists(
-            title="skipped",
-            tests=self.test_report.get_tests_by_status(test_status=TestResult.SKIPPED),
-        )
-        if skipped:
-            output += TestIcons.SKIPPED.value + skipped
-
-        failures = self._format_lists(
-            title="failures",
-            tests=self.test_report.get_tests_by_status(test_status=TestResult.FAILED),
-        )
-        if failures:
-            output += TestIcons.FAILED.value + failures
-
-        errors = self._format_lists(
-            title="errors",
-            tests=self.test_report.get_tests_by_status(test_status=TestResult.ERROR),
-        )
-        if errors:
-            output += TestIcons.ERROR.value + errors
-
-        return output + ""
 
     def _format_lists(self, title: str, tests: List[TestCase]) -> str:
         """Returns formatted markdown sections with formatted title section"""
         if not tests:
             return ""
-        title = f"__**{title.capitalize()}**__ ({len(tests)})"
         message = "```"
-        for test in tests[:4]:
+        for test in tests[:self.MAX_TEST_SHOWN]:
             test_msg = test.message or ""
             test_case_message = ""
             if test_msg:

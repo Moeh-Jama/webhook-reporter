@@ -1,21 +1,55 @@
 """Utilities module for Parse/Provider logics"""
 
-from src.models.test_suite import TestResult
+from src.formatters.base_formatter import BaseFormatter
+from src.formatters.discord_formatter import DiscordFormatter
+from src.formatters.slack_formatter import SlackFormatter
+from src.formatters.teams_formatter import TeamsFormatter
+from src.models.data_reports import NormalisedCoverageData
+from src.models.test_suite import TestReport, TestResult
+from src.providers.base_provider import Baseprovider
 from src.providers.discord_provider import DiscordProvider
 from src.providers.slack_provider import SlackProvider
+from src.providers.teams_provider import TeamsProvider
 
 
-def set_provider(provider_name: str) -> DiscordProvider | SlackProvider:
+def set_provider(provider_name: str) -> Baseprovider:
     """Returns the Provider based on provider name"""
     provider_name = process_text_input(text=provider_name)
     if provider_name == "discord":
         return DiscordProvider()
     elif provider_name == "slack":
         return SlackProvider()
+    elif provider_name == "teams":
+        return TeamsProvider()
     else:
         raise Exception(
             f"Provider {provider_name} is not supported! raise a ticket on https://github.com/Moeh-Jama/webhook-reporter/issues/new"
         )
+
+
+def set_formatter(
+    provider_name: str, coverage_report: NormalisedCoverageData, test_report: TestReport
+) -> BaseFormatter:
+    """Generates a Formatter based on the type of provider given"""
+    provider_name = process_text_input(text=provider_name)
+    if provider_name == "discord":
+        formatter = DiscordFormatter(
+            coverage_report=coverage_report, test_report=test_report
+        )
+    elif provider_name == "slack":
+        formatter = SlackFormatter(
+            coverage_report=coverage_report, test_report=test_report
+        )
+    elif provider_name == "teams":
+        formatter = TeamsFormatter(
+            coverage_report=coverage_report, test_report=test_report
+        )
+    else:
+        raise Exception(
+            f"Provider {provider_name} is not supported! raise a ticket on https://github.com/Moeh-Jama/webhook-reporter/issues/new"
+        )
+
+    return formatter
 
 
 def process_text_input(text: str) -> str:

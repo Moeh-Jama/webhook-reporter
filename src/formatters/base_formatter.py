@@ -46,7 +46,7 @@ class BaseFormatter(ABC):
         
         return {
             "message": "Notified via Webhook Reporter",
-            "url": "example.com",
+            "url": BOT_IMAGE,
             "icon_url": BOT_IMAGE
         }
 

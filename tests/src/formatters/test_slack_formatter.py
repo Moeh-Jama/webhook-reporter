@@ -69,15 +69,15 @@ def test_generate_full_message(mock_coverage_data, mock_test_report):
     assert len(message_block) > 0
 
     assert message_block[0]['text']['text'] == ':rocket: Test and Coverage Report'
-    fields = message_block[1]['fields']
+    fields = message_block[2]['fields']
     assert len(fields) == 9
     assert fields[0]['text'].endswith('85%') # Line Coverage
 
 def test_generate_full_message_no_test_report(mock_coverage_data):
     formatter = SlackFormatter(mock_coverage_data)
     message_block = formatter.generate_full_message()
-    assert len(message_block) == 5  # Only coverage report should be generated
-    fields = message_block[1]['fields']
+    assert len(message_block) == 6  # Only coverage report should be generated
+    fields = message_block[2]['fields']
     assert len(fields) == 3
 
 def test_generate_full_message_no_coverage_embed(mock_coverage_data, mock_test_report):
