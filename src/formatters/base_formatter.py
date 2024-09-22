@@ -1,6 +1,7 @@
 """The Base Formatter used by all Providers to format their messages"""
 
 from abc import ABC, abstractmethod
+import logging
 import os
 from config import BOT_IMAGE
 from src.helpers.github_action import GitHubActionInfo
@@ -20,6 +21,7 @@ class BaseFormatter(ABC):
         self.test_report = test_report
         self.github_action = GitHubActionInfo()
         self.MAX_TEST_SHOWN = 4
+        self.logger = logging.getLogger("webhook-reporter-logger")
     
     @abstractmethod
     def generate_full_message(self):

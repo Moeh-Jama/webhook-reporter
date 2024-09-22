@@ -7,6 +7,7 @@ from typing import Tuple
 from dotenv import load_dotenv
 from src.exceptions.configurations import (
     ConfigurationValuesNotFoundError,
+    InvalidProviderError,
     UnsupportedCoverageType,
     UnsupportedTestReportType,
 )
@@ -16,7 +17,7 @@ from src.logger import setup_logging
 from src.parsers.parser_factory import ParserFactory
 from src.providers.base_provider import Baseprovider
 from src.test_readers.reader_factory import ReaderFactory
-from src.utils import set_formatter, set_provider
+from src.utils import closest_approx_name, set_formatter, set_provider
 
 setup_logging()
 logger = logging.getLogger("webhook-reporter-logger")
@@ -62,8 +63,12 @@ def setup_provider() -> Tuple[Baseprovider, BaseFormatter]:
     test_report = reader.read(test_file)
     logger.debug("Test Suites report parsed")
 
-    formatter: BaseFormatter = set_formatter(provider_name=provider_name, coverage_report=coverage_report, test_report=test_report)
-    provider = set_provider(provider_name=provider_name)
+    try:
+        formatter = set_formatter(provider_name=provider_name, coverage_report=coverage_report, test_report=test_report)
+        provider = set_provider(provider_name=provider_name)
+    except InvalidProviderError:
+        sys.exit(1)
+
     logger.debug("Webhook configured")
     return provider, formatter
 

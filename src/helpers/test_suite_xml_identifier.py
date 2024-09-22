@@ -28,4 +28,5 @@ class TestSuiteXmlIdentifier(XmlIdentifierBase):
         if self.root.tag == "test-results" and "total" in self.root.attrib:
             return TestSuiteFileType.NUNIT
 
+        self.logger.warning(f"Could not identify the test XML file [{self.xml_file}].")
         raise UnsupportedTestReportType()

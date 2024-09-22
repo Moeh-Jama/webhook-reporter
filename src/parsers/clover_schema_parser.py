@@ -15,8 +15,6 @@ class CloverSchemaParser(SchemaParser):
 
     def parse_and_normalise(self, coverage_file: str) -> NormalisedCoverageData:
         """Parse the JSON converage_file and generate a normalised coverage"""
-        # <metrics statements="12" coveredstatements="4" conditionals="6" coveredconditionals="0" methods="4" coveredmethods="3" elements="22" coveredelements="7" complexity="0" loc="12" ncloc="12" packages="1" files="2" classes="2"/>
-        # coverage/line_rate = coveredstatements/statements
         tree = ET.parse(coverage_file)
         root = tree.getroot()
         timestamp = root.attrib["generated"]

@@ -1,5 +1,9 @@
 """Utilities module for Parse/Provider logics"""
 
+import difflib
+import logging
+from typing import List
+from src.exceptions.configurations import InvalidProviderError
 from src.formatters.base_formatter import BaseFormatter
 from src.formatters.discord_formatter import DiscordFormatter
 from src.formatters.slack_formatter import SlackFormatter
@@ -11,6 +15,7 @@ from src.providers.discord_provider import DiscordProvider
 from src.providers.slack_provider import SlackProvider
 from src.providers.teams_provider import TeamsProvider
 
+logger = logging.getLogger("webhook-reporter-logger")
 
 def set_provider(provider_name: str) -> Baseprovider:
     """Returns the Provider based on provider name"""
@@ -22,10 +27,15 @@ def set_provider(provider_name: str) -> Baseprovider:
     elif provider_name == "teams":
         return TeamsProvider()
     else:
-        raise Exception(
-            f"Provider {provider_name} is not supported! raise a ticket on https://github.com/Moeh-Jama/webhook-reporter/issues/new"
-        )
+        log_incorrect_provider_name(provider_name=provider_name)
+        logger.error(f"Provider {provider_name} is not supported! raise a ticket on https://github.com/Moeh-Jama/webhook-reporter/issues/new")
+        raise InvalidProviderError
 
+
+def closest_approx_name(allowed_names: List[str], given_name: str) -> str:
+    """Returns the closest approximate name to provided name. If none match to cutoff we return empty string"""
+    close_matches = difflib.get_close_matches(given_name, allowed_names, n=1, cutoff=0.6)
+    return f"Did you mean '{close_matches[0]}'?" if close_matches else ""
 
 def set_formatter(
     provider_name: str, coverage_report: NormalisedCoverageData, test_report: TestReport
@@ -45,9 +55,9 @@ def set_formatter(
             coverage_report=coverage_report, test_report=test_report
         )
     else:
-        raise Exception(
-            f"Provider {provider_name} is not supported! raise a ticket on https://github.com/Moeh-Jama/webhook-reporter/issues/new"
-        )
+        log_incorrect_provider_name(provider_name=provider_name)
+        logger.error(f"Provider {provider_name} is not supported! raise a ticket on https://github.com/Moeh-Jama/webhook-reporter/issues/new")
+        raise InvalidProviderError
 
     return formatter
 
@@ -57,6 +67,11 @@ def process_text_input(text: str) -> str:
     text = text.lower().strip()
     return text
 
+def log_incorrect_provider_name(provider_name: str):
+    allowed_provider_names = ['discord', 'slack', 'teams']
+    message = closest_approx_name(allowed_names=allowed_provider_names, given_name=provider_name)
+    if message:
+        logger.debug(message)
 
 def get_test_case_status(status: str) -> TestResult:
     """Returns the TestResult from given status as string"""

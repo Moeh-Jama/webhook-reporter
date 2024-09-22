@@ -27,4 +27,3 @@ class DiscordProvider(Baseprovider):
                 self.logger.error("This webhook was not found")
             except Forbidden:
                 self.logger.error("Access was forbidden with given webhook")
-        await session.close()

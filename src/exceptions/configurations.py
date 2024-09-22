@@ -6,6 +6,10 @@ class ConfigurationValuesNotFoundError(Exception):
 
     pass
 
+class InvalidProviderError(Exception):
+    """Custom exception for invalid provider errors."""
+    pass
+
 
 class UnsupportedCoverageType(Exception):
     """The given coverage is not supported"""

@@ -107,7 +107,9 @@ class TeamsFormatter(BaseFormatter):
         """Returns all if any TextBlock messages for non-passing test-cases"""
         section: List[TextBlock] = []
         if not self.test_report.failure_summary:
+            self.logger.warnning('Could not generate a test-report as it was empty')
             return section
+
         header = TextBlock(
             text="\ud83d\udccb **Test Details**",
             weight="Bolder",

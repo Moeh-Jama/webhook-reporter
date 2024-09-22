@@ -24,4 +24,5 @@ class CoverageXmlIdentifier(XmlIdentifierBase):
         elif self.root.tag == "report" and "name" in self.root.attrib:
             return CoverageFileType.JACOCO
 
+        self.logger.warning(f"Could not parse the XML file [{self.xml_file}].")
         raise UnsupportedCoverageType()

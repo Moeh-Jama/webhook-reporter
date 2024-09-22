@@ -2,7 +2,7 @@ import textwrap
 from typing import Any, Dict, List
 
 from src.formatters.base_formatter import BaseFormatter
-from src.models.test_suite import TestCase, TestIcons, TestResult
+from src.models.test_suite import TestCase, TestResult
 
 IGNORED_FIELDS = ["failure_summary", "slowest_tests"]
 
@@ -36,7 +36,7 @@ class SlackFormatter(BaseFormatter):
 
         blocks.append({"type": "divider"})
 
-        if self.test_report:
+        if test_report_section:
             blocks.extend(test_report_section)
 
         blocks.append(self.format_footer())
@@ -105,6 +105,7 @@ class SlackFormatter(BaseFormatter):
     def format_test_report(self) -> List[Dict[str, Any]]:
         sections = []
         if not self.test_report:
+            self.logger.warnning('Could not generate a test-report as it was empty')
             return sections
 
         highlight = self._highlight_tests_message()
