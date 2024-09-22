@@ -10,6 +10,21 @@ Webhook Reporter is a versatile GitHub Action designed to generate and send deta
 - Combines both test results and coverage information in a unified report
 - Simple setup and integration into any GitHub Actions workflow
 
+## Examples
+
+<table>
+  <tr>
+    <th>Discord</th>
+    <th>Slack</th>
+    <th>Teams</th>
+  </tr>
+  <tr>
+    <td><img src="./images/discord_example.PNG" alt="Discord image example message report" width="250"/></td>
+    <td><img src="./images/slack_example.PNG" alt="Slack image example message report" width="250"/></td>
+    <td><img src="./images/teams_example.PNG" alt="Teams image example message report" width="250"/></td>
+  </tr>
+</table>
+
 ## Usage
 To use this action in your workflow:
 
