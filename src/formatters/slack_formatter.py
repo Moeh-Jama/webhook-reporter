@@ -105,7 +105,7 @@ class SlackFormatter(BaseFormatter):
     def format_test_report(self) -> List[Dict[str, Any]]:
         sections = []
         if not self.test_report:
-            self.logger.warnning('Could not generate a test-report as it was empty')
+            self.logger.warning('Could not generate a test-report as it was empty')
             return sections
 
         highlight = self._highlight_tests_message()

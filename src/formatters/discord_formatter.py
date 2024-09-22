@@ -60,7 +60,7 @@ class DiscordFormatter(BaseFormatter):
     def format_test_report(self):
         """Create test report as an embed"""
         if not self.test_report:
-            self.logger.warnning('Could not generate a test-report as it was empty')
+            self.logger.warning('Could not generate a test-report as it was empty')
             return None
 
         summary: Dict[str, Any] = self.test_report.get_summary()

@@ -17,7 +17,7 @@ from src.logger import setup_logging
 from src.parsers.parser_factory import ParserFactory
 from src.providers.base_provider import Baseprovider
 from src.test_readers.reader_factory import ReaderFactory
-from src.utils import closest_approx_name, set_formatter, set_provider
+from src.utils import set_formatter, set_provider
 
 setup_logging()
 logger = logging.getLogger("webhook-reporter-logger")

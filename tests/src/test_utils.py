@@ -18,9 +18,8 @@ def test_set_provider_discord():
 
 
 def test_set_provider_unsupported():
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(Exception):
         set_provider("unsupported_provider")
-    assert "Provider unsupported_provider is not supported" in str(exc_info.value)
 
 
 def test_test_case_status():

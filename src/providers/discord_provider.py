@@ -17,7 +17,6 @@ class DiscordProvider(Baseprovider):
             webhook = Webhook.from_url(self.webhook_url, session=session)
             try:
                 await webhook.send(
-                    "format 2",
                     embeds=messages,
                     username="webhook-reporter",
                     avatar_url=avatar_url,

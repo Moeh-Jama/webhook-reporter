@@ -80,7 +80,7 @@ def test_generate_full_message_no_test_report(mock_coverage_data):
     fields = message_block[2]['fields']
     assert len(fields) == 3
 
-def test_generate_full_message_no_coverage_embed(mock_coverage_data, mock_test_report):
+def test_generate_full_message_no_coverage_section(mock_coverage_data, mock_test_report):
     formatter = SlackFormatter(mock_coverage_data, mock_test_report)
     with patch.object(SlackFormatter, "format_coverage", return_value=None):
         with pytest.raises(
@@ -102,7 +102,7 @@ def test_report_embed(mock_coverage_data, mock_test_report_with_failures):
     formatter = SlackFormatter(mock_coverage_data, mock_test_report_with_failures)
     test_report_section = formatter.format_test_report()
     assert test_report_section[0]['text']['text'] == ':clipboard: Test Details'
-    assert test_report_section[1]['text']['text'] == '❌__**Failures**__ (1)\n```\nfailing:\nException occurred:\n```'
+    assert test_report_section[1]['text']['text'] == ':x: *Failed* (1)\n```\nfailing:\nException occurred:\n```'
 
 @patch("os.getenv", return_value="80")
 def test_threshold_slightly_below(mock_coverage_data):

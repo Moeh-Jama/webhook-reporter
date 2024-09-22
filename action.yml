@@ -13,12 +13,9 @@ inputs:
     required: true
   test_results:
     description: "test results file"
-    required: true
-  success_icon_url:
-    description: 'URL for the success icon image'
     required: false
-  failure_icon_url:
-    description: 'URL for the failure icon image'
+  coverage_threshold:
+    description: "Percent threshold that we want coverage to be above."
     required: false
 
 runs:
@@ -29,3 +26,4 @@ runs:
     - ${{ inputs.provider }}
     - ${{ inputs.test_results }}
     - ${{ inputs.webhook_url }}
+    - ${{ inputs.coverage_threshold }}
