@@ -12,7 +12,7 @@ class SchemaParser(ABC):
     @abstractmethod
     def parse_and_normalise(self, coverage_file: str) -> NormalisedCoverageData:
         """Parse the data and return the normalised view"""
-        super().parse_and
+        raise NotImplementedError
     
     @abstractmethod
     def normalise(self, parsed_data: Any) -> NormalisedCoverageData:

@@ -5,6 +5,7 @@ from src.exceptions.configurations import UnsupportedCoverageType
 from src.helpers.coverage_xml_identifier import CoverageXmlIdentifier
 from src.models.file_types import CoverageFileType
 from src.parsers.clover_schema_parser import CloverSchemaParser
+from src.parsers.jacoco_schema_parser import JacocoSchemaParser
 from src.parsers.schema_parser import SchemaParser
 from src.parsers.coberature_schema_parser import CoberatureSchemaParser
 
@@ -24,5 +25,7 @@ class ParserFactory:
             return CoberatureSchemaParser()
         elif coverage_type == CoverageFileType.CLOVER:
             return CloverSchemaParser()
+        elif coverage_type == CoverageFileType.JACOCO:
+            return JacocoSchemaParser()
         else:
             raise UnsupportedCoverageType()

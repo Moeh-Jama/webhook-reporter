@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- <!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd"> -->
+<report name="java-coverage-example">
+    <sessioninfo id="DESKTOP-RANDOM-f9206ce9" start="1724417668886" dump="1724417669542" />
+    <sessioninfo id="DESKTOP-RANDOM-5456ee08" start="1724418115631" dump="1724418116217" />
+    <sessioninfo id="DESKTOP-RANDOM-6acacb7a" start="1724418225066" dump="1724418225642" />
+    <sessioninfo id="DESKTOP-RANDOM-d3f457d4" start="1724418316316" dump="1724418316857" />
+    <package name="org/example">
+        <class name="org/example/Main" sourcefilename="Main.java">
+            <method name="&lt;init&gt;" desc="()V" line="5">
+                <counter type="INSTRUCTION" missed="3" covered="0" />
+                <counter type="LINE" missed="1" covered="0" />
+                <counter type="COMPLEXITY" missed="1" covered="0" />
+                <counter type="METHOD" missed="1" covered="0" />
+            </method>
+            <method name="main" desc="([Ljava/lang/String;)V" line="9">
+                <counter type="INSTRUCTION" missed="18" covered="0" />
+                <counter type="BRANCH" missed="2" covered="0" />
+                <counter type="LINE" missed="4" covered="0" />
+                <counter type="COMPLEXITY" missed="2" covered="0" />
+                <counter type="METHOD" missed="1" covered="0" />
+            </method>
+            <counter type="INSTRUCTION" missed="21" covered="0" />
+            <counter type="BRANCH" missed="2" covered="0" />
+            <counter type="LINE" missed="5" covered="0" />
+            <counter type="COMPLEXITY" missed="3" covered="0" />
+            <counter type="METHOD" missed="2" covered="0" />
+            <counter type="CLASS" missed="1" covered="0" />
+        </class>
+        <class name="org/example/Calculator" sourcefilename="Calculator.java">
+            <method name="&lt;init&gt;" desc="()V" line="3">
+                <counter type="INSTRUCTION" missed="0" covered="3" />
+                <counter type="LINE" missed="0" covered="1" />
+                <counter type="COMPLEXITY" missed="0" covered="1" />
+                <counter type="METHOD" missed="0" covered="1" />
+            </method>
+            <method name="add" desc="(II)I" line="5">
+                <counter type="INSTRUCTION" missed="0" covered="4" />
+                <counter type="LINE" missed="0" covered="1" />
+                <counter type="COMPLEXITY" missed="0" covered="1" />
+                <counter type="METHOD" missed="0" covered="1" />
+            </method>
+            <method name="subtract" desc="(II)I" line="9">
+                <counter type="INSTRUCTION" missed="0" covered="4" />
+                <counter type="LINE" missed="0" covered="1" />
+                <counter type="COMPLEXITY" missed="0" covered="1" />
+                <counter type="METHOD" missed="0" covered="1" />
+            </method>
+            <method name="divide" desc="(II)F" line="13">
+                <counter type="INSTRUCTION" missed="0" covered="6" />
+                <counter type="LINE" missed="0" covered="1" />
+                <counter type="COMPLEXITY" missed="0" covered="1" />
+                <counter type="METHOD" missed="0" covered="1" />
+            </method>
+            <method name="multiply" desc="(II)I" line="17">
+                <counter type="INSTRUCTION" missed="0" covered="4" />
+                <counter type="LINE" missed="0" covered="1" />
+                <counter type="COMPLEXITY" missed="0" covered="1" />
+                <counter type="METHOD" missed="0" covered="1" />
+            </method>
+            <counter type="INSTRUCTION" missed="0" covered="21" />
+            <counter type="LINE" missed="0" covered="5" />
+            <counter type="COMPLEXITY" missed="0" covered="5" />
+            <counter type="METHOD" missed="0" covered="5" />
+            <counter type="CLASS" missed="0" covered="1" />
+        </class>
+        <sourcefile name="Main.java">
+            <line nr="5" mi="3" ci="0" mb="0" cb="0" />
+            <line nr="9" mi="6" ci="0" mb="0" cb="0" />
+            <line nr="11" mi="7" ci="0" mb="2" cb="0" />
+            <line nr="14" mi="4" ci="0" mb="0" cb="0" />
+            <line nr="16" mi="1" ci="0" mb="0" cb="0" />
+            <counter type="INSTRUCTION" missed="21" covered="0" />
+            <counter type="BRANCH" missed="2" covered="0" />
+            <counter type="LINE" missed="5" covered="0" />
+            <counter type="COMPLEXITY" missed="3" covered="0" />
+            <counter type="METHOD" missed="2" covered="0" />
+            <counter type="CLASS" missed="1" covered="0" />
+        </sourcefile>
+        <sourcefile name="Calculator.java">
+            <line nr="3" mi="0" ci="3" mb="0" cb="0" />
+            <line nr="5" mi="0" ci="4" mb="0" cb="0" />
+            <line nr="9" mi="0" ci="4" mb="0" cb="0" />
+            <line nr="13" mi="0" ci="6" mb="0" cb="0" />
+            <line nr="17" mi="0" ci="4" mb="0" cb="0" />
+            <counter type="INSTRUCTION" missed="0" covered="21" />
+            <counter type="LINE" missed="0" covered="5" />
+            <counter type="COMPLEXITY" missed="0" covered="5" />
+            <counter type="METHOD" missed="0" covered="5" />
+            <counter type="CLASS" missed="0" covered="1" />
+        </sourcefile>
+        <counter type="INSTRUCTION" missed="21" covered="21" />
+        <counter type="BRANCH" missed="2" covered="0" />
+        <counter type="LINE" missed="5" covered="5" />
+        <counter type="COMPLEXITY" missed="3" covered="5" />
+        <counter type="METHOD" missed="2" covered="5" />
+        <counter type="CLASS" missed="1" covered="1" />
+    </package>
+    <counter type="INSTRUCTION" missed="21" covered="21" />
+    <counter type="BRANCH" missed="2" covered="0" />
+    <counter type="LINE" missed="5" covered="5" />
+    <counter type="COMPLEXITY" missed="3" covered="5" />
+    <counter type="METHOD" missed="2" covered="5" />
+    <counter type="CLASS" missed="1" covered="1" />
+</report>
