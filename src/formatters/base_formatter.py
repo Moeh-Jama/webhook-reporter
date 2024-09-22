@@ -56,8 +56,8 @@ class BaseFormatter(ABC):
         """Returns color value based on threshold or default of 0.8
         if a current coverage is less than coverage by 20% it is highlighted critical, else needs_improvement
         """
-        threshold = float(os.getenv("COVERAGE_THRESHOLD", "0")) / 100.0
-        rate = self.coverage_report.total_line_rate
+        threshold = float(os.getenv("INPUT_COVERAGE_THRESHOLD", "0"))
+        rate = self.coverage_report.total_line_rate * 100
 
         if rate >= threshold:
             return "good"

@@ -80,17 +80,14 @@ def mock_test_report_with_insanely_long_failure_message():
 # Tests for generate_full_message
 def test_generate_full_message(mock_coverage_data, mock_test_report):
     formatter = DiscordFormatter(mock_coverage_data, mock_test_report)
-    embeds = formatter.generate_full_message()
-    assert len(embeds) == 2  # Both coverage and test report should be generated
-    assert isinstance(embeds[0], Embed)
-    assert isinstance(embeds[1], Embed)
+    embed = formatter.generate_full_message()
+    assert len(embed.fields) == 9  # Both coverage and test report should be generated
 
 
 def test_generate_full_message_no_test_report(mock_coverage_data):
     formatter = DiscordFormatter(mock_coverage_data)
-    embeds = formatter.generate_full_message()
-    assert len(embeds) == 1  # Only coverage report should be generated
-    assert isinstance(embeds[0], Embed)
+    embed = formatter.generate_full_message()
+    assert len(embed.fields) == 3  # Only coverage report should be generated
 
 
 def test_generate_full_message_no_coverage_embed(mock_coverage_data, mock_test_report):

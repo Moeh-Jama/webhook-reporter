@@ -18,30 +18,27 @@ IGNORED_FIELDS = ["failure_summary", "slowest_tests"]
 class DiscordFormatter(BaseFormatter):
     """Formats the Coverage & Tests reports into Discord Message format"""
 
-    def generate_full_message(self) -> List[Embed]:
+    def generate_full_message(self) -> Embed:
         """Creates Embeds for Coverage Report and Test Report"""
         coverage_embed = self.format_coverage()
-        test_report_embed = self.format_test_report()
-        embeds: List[Embed] = []
+        embed: Embed = None
 
         if coverage_embed:
-            embeds.append(coverage_embed)
+            embed = self.format_coverage()
         else:
             raise ValueError(
                 "Coverage embed failed to generate. Check the coverage report data."
             )
 
-        if test_report_embed:
-            embeds.append(test_report_embed)
+        # if test_report_embed:
+        #     embeds.append(test_report_embed)
 
-        return embeds
+        return embed
 
     def format_coverage(self) -> Embed:
         """Create coverage report as an Embed"""
-        icon_url = BOT_IMAGE
         thumbnail = EmbedMedia(url=self.github_action.actor_profile_img)
-        footer = EmbedFooter(text="Notified via Webhook Reporter", icon_url=icon_url)
-        message = f"```{(self.test_report)} ```"
+        message = self.get_test_summary_message() if self.test_report else ''
         return Embed(
             timestamp=datetime.now(),
             title=self.github_action.event_name,  # LIMIT title Size
@@ -54,39 +51,12 @@ class DiscordFormatter(BaseFormatter):
                 name="webhook-reporter",
                 url="https://github.com/Moeh-Jama/webhook-reporter",
             ),
-            footer=footer,
+            footer=self.format_footer(),
         )
 
     def format_test_report(self):
         """Create test report as an embed"""
-        if not self.test_report:
-            self.logger.warning('Could not generate a test-report as it was empty')
-            return None
-
-        summary: Dict[str, Any] = self.test_report.get_summary()
-
-        thumbnail = EmbedMedia(url=BOT_IMAGE)
-        footer = self.format_footer()
-
-        fields = self._test_fields(test_report_summary=summary)
-        color_status = Color.brand_green()
-
-        if self.test_report.success_rate < 1:
-            color_status = Color.brand_red()
-        return Embed(
-            timestamp=datetime.now(),
-            title="Test Report",
-            url="",
-            description=self.get_test_summary_message(),
-            color=color_status,
-            thumbnail=thumbnail,
-            fields=fields,
-            author=EmbedAuthor(
-                name="webhook-reporter",
-                url="https://github.com/Moeh-Jama/webhook-reporter",
-            ),
-            footer=footer,
-        )
+        pass
 
     def format_footer(self) -> EmbedFooter:
         """Returns the discord footer"""
@@ -133,6 +103,11 @@ class DiscordFormatter(BaseFormatter):
                 inline=True,
             )
         )
+
+        if self.test_report:
+            test_fields = self._test_fields(self.test_report.get_summary())
+            field_metrics.extend(test_fields)
+
         return field_metrics
 
     def _format_field_name(self, field: CoverageMetricType) -> str:
@@ -173,7 +148,3 @@ class DiscordFormatter(BaseFormatter):
             highlight = textwrap.dedent(highlight)
 
         return highlight
-
-    def _test_report_contains_messages(self) -> bool:
-        """checks if failure/error messages exist"""
-        return self.test_report.total_failed > 0 or self.test_report.total_error > 0
