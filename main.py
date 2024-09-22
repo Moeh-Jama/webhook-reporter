@@ -60,8 +60,10 @@ def setup_provider() -> Tuple[Baseprovider, BaseFormatter]:
         print(e)
         sys.exit(1)
 
-    test_report = reader.read(test_file)
-    logger.debug("Test Suites report parsed")
+    test_report = None
+    if reader:
+        test_report = reader.read(test_file)
+        logger.debug("Test Suites report parsed")
 
     try:
         formatter = set_formatter(provider_name=provider_name, coverage_report=coverage_report, test_report=test_report)

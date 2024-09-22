@@ -88,6 +88,8 @@ class TeamsFormatter(BaseFormatter):
     def _test_report_fields(self) -> List[Column]:
         """Test Report fields"""
         columns: List[Column] = []
+        if not self.test_report:
+            return columns
         for name, value in self.test_report.get_summary().items():
             if name in IGNORED_FIELDS:
                 continue
@@ -106,8 +108,8 @@ class TeamsFormatter(BaseFormatter):
     def format_test_report(self) -> List[TextBlock]:
         """Returns all if any TextBlock messages for non-passing test-cases"""
         section: List[TextBlock] = []
-        if not self.test_report.failure_summary:
-            self.logger.warnning('Could not generate a test-report as it was empty')
+        if not self.test_report:
+            self.logger.warning('Could not generate a test-report as it was empty')
             return section
 
         header = TextBlock(

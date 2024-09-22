@@ -12,6 +12,8 @@ class ReaderFactory:
     """Return Reader type based on framework given"""
     @staticmethod
     def get_reader(test_file: str):
+        if not test_file:
+            return None
         if test_file.endswith('json'):
             return JestJSONReader()
         
