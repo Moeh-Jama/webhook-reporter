@@ -1,5 +1,5 @@
 import textwrap
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 from src.formatters.base_formatter import BaseFormatter
 from src.models.test_suite import TestCase, TestResult
@@ -90,7 +90,7 @@ class SlackFormatter(BaseFormatter):
 
         return section
 
-    def _action_image(self) -> Dict[str, str | Dict[str, str]]:
+    def _action_image(self) -> Dict[str, Union[str, Dict[str, str]]]:
         """Returns the associated image of the given triggered action"""
         return {
             "type": "image",
