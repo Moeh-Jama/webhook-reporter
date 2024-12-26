@@ -1,5 +1,5 @@
 name: 'Webhook Reporter'
-description: 'Sends coverage and failure reports to various providers like Discord.'
+description: 'Sends code coverage and test suite failure reports to various providers like Discord Slack And Teams.'
 author: Mohamed Jama
 inputs:
   coverage_file:
