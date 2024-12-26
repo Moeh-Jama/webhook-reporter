@@ -51,7 +51,7 @@ To use this action in your workflow add it like so:
 ```yaml
 steps:
   - name: Webhook Reporter
-    uses: your-username/webhook-reporter@main
+    uses: your-username/webhook-reporter@v1.0.0
     with:
       webhook_url: ${{ secrets.WEBHOOK_URL }}
       provider: 'discord'  # 'discord', 'slack', or 'teams'
