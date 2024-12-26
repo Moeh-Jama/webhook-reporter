@@ -63,7 +63,7 @@ def mock_test_report_with_failures():
     suite = TestSuite(name="file_tests", tests=[test1, test2, test3], time=24.0)
     return TestReport(suites=[suite])
 
-def test_generate_full_message(mock_coverage_data, mock_test_report):
+def test_generate_full_message(mock_coverage_data: NormalisedCoverageData, mock_test_report: TestReport):
     formatter = SlackFormatter(mock_coverage_data, mock_test_report)
     message_block = formatter.generate_full_message()
     assert len(message_block) > 0
@@ -73,14 +73,14 @@ def test_generate_full_message(mock_coverage_data, mock_test_report):
     assert len(fields) == 9
     assert fields[0]['text'].endswith('85%') # Line Coverage
 
-def test_generate_full_message_no_test_report(mock_coverage_data):
+def test_generate_full_message_no_test_report(mock_coverage_data: NormalisedCoverageData):
     formatter = SlackFormatter(mock_coverage_data)
     message_block = formatter.generate_full_message()
     assert len(message_block) == 6  # Only coverage report should be generated
     fields = message_block[2]['fields']
     assert len(fields) == 3
 
-def test_generate_full_message_no_coverage_section(mock_coverage_data, mock_test_report):
+def test_generate_full_message_no_coverage_section(mock_coverage_data: NormalisedCoverageData, mock_test_report: TestReport):
     formatter = SlackFormatter(mock_coverage_data, mock_test_report)
     with patch.object(SlackFormatter, "format_coverage", return_value=None):
         with pytest.raises(
@@ -89,7 +89,8 @@ def test_generate_full_message_no_coverage_section(mock_coverage_data, mock_test
         ):
             formatter.generate_full_message()
 
-def test_coverage_section(mock_coverage_data):
+def test_coverage_section(monkeypatch, mock_coverage_data: NormalisedCoverageData):
+    monkeypatch.setenv('INPUT_COVERAGE_THRESHOLD', mock_coverage_data.total_line_rate)
     formatter = SlackFormatter(mock_coverage_data)
     coverage_section = formatter.format_coverage()
     assert (
@@ -98,30 +99,30 @@ def test_coverage_section(mock_coverage_data):
 
     assert coverage_section[1]['elements'][0]['text'] == 'Coverage Status: :large_green_circle: Good'
 
-def test_report_embed(mock_coverage_data, mock_test_report_with_failures):
+def test_report_embed(mock_coverage_data: NormalisedCoverageData, mock_test_report_with_failures: TestReport):
     formatter = SlackFormatter(mock_coverage_data, mock_test_report_with_failures)
     test_report_section = formatter.format_test_report()
     assert test_report_section[0]['text']['text'] == ':clipboard: Test Details'
     assert test_report_section[1]['text']['text'] == ':x: *Failed* (1)\n```\nfailing:\nException occurred:\n```'
 
-@patch("os.getenv", return_value="80")
-def test_threshold_slightly_below(mock_coverage_data):
+def test_threshold_slightly_below(monkeypatch, mock_coverage_data: NormalisedCoverageData):
+    monkeypatch.setenv('INPUT_COVERAGE_THRESHOLD', '0.8')
     mock_coverage_data.total_line_rate = 0.75
     formatter = SlackFormatter(mock_coverage_data)
     coverage_value = formatter._get_coverage_color()
     assert coverage_value == ':large_yellow_circle: Needs_improvement'
 
 
-@patch("os.getenv", return_value="70")
-def test_threshold_is_exceeded(mock_getenv, mock_coverage_data):
+def test_threshold_is_exceeded(monkeypatch, mock_coverage_data: NormalisedCoverageData):
+    monkeypatch.setenv('INPUT_COVERAGE_THRESHOLD', '0.7')
     mock_coverage_data.total_line_rate = 0.75
     formatter = SlackFormatter(mock_coverage_data)
     coverage_value = formatter._get_coverage_color()
     assert coverage_value == ':large_green_circle: Good'
 
 
-@patch("os.getenv", return_value="90")
-def test_threshold_color_much_lower(mock_getenv, mock_coverage_data):
+def test_threshold_color_much_lower(monkeypatch, mock_coverage_data: NormalisedCoverageData):
+    monkeypatch.setenv('INPUT_COVERAGE_THRESHOLD', '0.9')
     mock_coverage_data.total_line_rate = 0.70
     formatter = SlackFormatter(mock_coverage_data)
     coverage_value = formatter._get_coverage_color()

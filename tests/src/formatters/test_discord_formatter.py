@@ -135,24 +135,24 @@ def test_report_embed_with_failures(
 
 
 # Tests for _threshold_color
-@patch("os.getenv", return_value="80")
-def test_threshold_color_high_threshold(mock_coverage_data):
+def test_threshold_color_high_threshold(monkeypatch, mock_coverage_data):
+    monkeypatch.setenv('INPUT_COVERAGE_THRESHOLD', '0.8')
     mock_coverage_data.total_line_rate = 0.75
     formatter = DiscordFormatter(mock_coverage_data)
     color = formatter._threshold_color()
     assert color == Color.yellow()
 
 
-@patch("os.getenv", return_value="70")
-def test_threshold_color_low_threshold(mock_getenv, mock_coverage_data):
+def test_threshold_color_low_threshold(monkeypatch, mock_coverage_data):
+    monkeypatch.setenv('INPUT_COVERAGE_THRESHOLD', '0.7')
     mock_coverage_data.total_line_rate = 0.75
     formatter = DiscordFormatter(mock_coverage_data)
     color = formatter._threshold_color()
     assert color == Color.dark_green()
 
 
-@patch("os.getenv", return_value="75")
-def test_threshold_color_yellow_threshold(mock_getenv, mock_coverage_data):
+def test_threshold_color_yellow_threshold(monkeypatch, mock_coverage_data):
+    monkeypatch.setenv('INPUT_COVERAGE_THRESHOLD', '0.75')
     mock_coverage_data.total_line_rate = 0.70
     formatter = DiscordFormatter(mock_coverage_data)
     color = formatter._threshold_color()

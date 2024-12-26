@@ -57,7 +57,8 @@ class BaseFormatter(ABC):
         if a current coverage is less than coverage by 20% it is highlighted critical, else needs_improvement
         """
         threshold = float(os.getenv("INPUT_COVERAGE_THRESHOLD", "0") or '0')
-        rate = self.coverage_report.total_line_rate * 100
+        print('threshold is', threshold)
+        rate = self.coverage_report.total_line_rate
 
         if rate >= threshold:
             return "good"
