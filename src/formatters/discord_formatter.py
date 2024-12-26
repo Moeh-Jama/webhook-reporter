@@ -4,7 +4,6 @@ from datetime import datetime
 import textwrap
 from typing import Dict, List
 from discord import Any, Color, Embed, EmbedAuthor, EmbedField, EmbedFooter, EmbedMedia
-from config import BOT_IMAGE
 from src.formatters.base_formatter import BaseFormatter
 from src.formatters.utils.format_markdown import (
     generate_test_summary_by_status,

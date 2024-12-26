@@ -5,7 +5,6 @@ from src.helpers.test_suite_xml_identifier import TestSuiteXmlIdentifier
 from src.models.file_types import TestSuiteFileType
 from src.test_readers.jest_reader import JestJSONReader
 from src.test_readers.junit_reader import JUnitReader
-from src.utils import process_text_input
 
 
 class ReaderFactory:

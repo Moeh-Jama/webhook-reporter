@@ -26,7 +26,7 @@ class UnsupportedCoverageType(Exception):
         """Generates the Issue with already configured Ticket data."""
         issue_title = "Unsupported Coverage Format"
         issue_body = (
-            f"### Framework: '<ENTER TEST FRAMEWORK>' is not supported\n"
+            "### Framework: '<ENTER TEST FRAMEWORK>' is not supported\n"
             "Please check the configuration or extend the support for this framework.\n\n"
             "<Please any format and configurations for the test-framework here>\n"
             "##### Error Details:\n"
@@ -62,7 +62,7 @@ class UnsupportedTestReportType(Exception):
         """Generates the Issue with already configured Ticket data."""
         issue_title = "Unsupported Coverage Format"
         issue_body = (
-            f"### Test File Type '<ADD FILENAME.EXTENSION>' for Framework '<YOUR TESTING FRAMEWORK>' is not supported\n"
+            "### Test File Type '<ADD FILENAME.EXTENSION>' for Framework '<YOUR TESTING FRAMEWORK>' is not supported\n"
             "Please check the configuration or extend the support for this framework.\n\n"
             "<Please any format and configurations for the test-framework here>\n"
             "##### Error Details:\n"

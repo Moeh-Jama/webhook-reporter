@@ -195,11 +195,6 @@ def test_report_format_embed_description_truncation(
         Mock(spec=NormalisedCoverageData),
         mock_test_report_with_insanely_long_failure_message,
     )
-    failed_cases = (
-        mock_test_report_with_insanely_long_failure_message.get_tests_by_status(
-            test_status=TestResult.FAILED
-        )
-    )
 
     formatted_message = formatter.get_test_summary_message()
     assert len(formatted_message) <= 4096
