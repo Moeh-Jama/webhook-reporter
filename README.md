@@ -1,16 +1,21 @@
 # Webhook Reporter
-
+Seamlessly send test reports to your preferred messaging platforms.
 ## Description
 Webhook Reporter is a versatile GitHub Action designed to generate and send detailed test coverage and test result reports to multiple messaging platforms. It seamlessly parses coverage and test result data, standardizes the reports, and delivers them through webhooks to platforms such as Discord, Slack, or Microsoft Teams.
 
+### Why Webhook Reporter?
+Modern development teams need real-time feedback from their CI/CD pipelines. Webhook Reporter bridges the gap between testing workflows and collaboration tools by:
+- Standardizing diverse coverage and test result formats.
+- Delivering concise, actionable summaries to Slack, Discord, or Microsoft Teams.
+- Reducing debugging time with clear, comprehensive insights.
 
 ## Features
-- Multi-platform support (Discord, Slack, Microsoft Teams)
-- Parses coverage data from multiple testing frameworks (e.g., JaCoCo, Cobertura, Clover)
-- Combines both test results and coverage information in a unified report
-- Simple setup and integration into any GitHub Actions workflow
+- Supports multiple platforms: Discord, Slack, Microsoft Teams
+- Parses test results and coverage data: Compatible with JaCoCo, Cobertura, Clover, etc.
+- Generates unified reports: Combines test results and coverage into a single output.
+- Easy integration: Works with any GitHub Actions workflow.
 
-## Examples
+### Examples
 
 <table>
   <tr>
@@ -19,21 +24,33 @@ Webhook Reporter is a versatile GitHub Action designed to generate and send deta
     <th>Teams</th>
   </tr>
   <tr>
-    <td><img src="./images/discord_example.PNG" alt="Discord image example message report" width="250"/></td>
-    <td><img src="./images/slack_example.PNG" alt="Slack image example message report" width="250"/></td>
-    <td><img src="./images/teams_example.PNG" alt="Teams image example message report" width="250"/></td>
+    <td>
+      <img src="./images/discord_example.PNG" alt="Discord image example message report" width="250"/>
+      <br/><em>Test and coverage summary delivered to Discord</em>
+    </td>
+    <td>
+      <img src="./images/slack_example.PNG" alt="Slack image example message report" width="250"/>
+      <br/><em>Test and coverage summary delivered to Slack</em>
+    </td>
+    <td>
+      <img src="./images/teams_example.PNG" alt="Teams image example message report" width="250"/>
+      <br/><em>Test and coverage summary delivered to Teams</em>
+    </td>
   </tr>
 </table>
 
-## Usage
-To use this action in your workflow:
+
+## Configuration Details
+### Usage
+To use this action in your workflow add it like so:
 
 ```yaml
 steps:
-  - uses: your-username/webhook-reporter@v1
+  - name: Webhook Reporter
+    uses: your-username/webhook-reporter@main
     with:
       webhook_url: ${{ secrets.WEBHOOK_URL }}
-      provider: 'discord'  # Can also be 'slack' or 'teams'
+      provider: 'discord'  # 'discord', 'slack', or 'teams'
       coverage_file: 'path/to/coverage.xml'
       test_results_file: 'path/to/test-results.xml'
 
@@ -43,157 +60,179 @@ steps:
 > **Note:** Ensure your webhook URL is stored securely as a GitHub Secret (e.g., `WEBHOOK_URL`).
 
 
-### Generating Test Results
-
-For comprehensive insights into your project's health, it's highly recommended to generate both coverage and test results files. Below are examples for several common testing frameworks:
-
-#### Pytest
-To generate both coverage and test results:
-
-```bash
-pytest --cov=your_package --cov-report=xml:coverage.xml --junitxml=test-results.xml
-```
-The above command runs `pytest` with coverage generation and outputs both coverage and test results in XML format, which can then be used by the Webhook Reporter.
-
-#### JaCoCo (Java)
-For JaCoCo, you typically configure it in your build tool. Here's an example for Maven:
-
-```xml
-<plugin>
-    <groupId>org.jacoco</groupId>
-    <artifactId>jacoco-maven-plugin</artifactId>
-    <version>0.8.7</version>
-    <executions>
-        <execution>
-            <goals>
-                <goal>prepare-agent</goal>
-            </goals>
-        </execution>
-        <execution>
-            <id>report</id>
-            <phase>test</phase>
-            <goals>
-                <goal>report</goal>
-            </goals>
-        </execution>
-    </executions>
-</plugin>
-```
-
-And for test results with Surefire:
-
-```xml
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-plugin</artifactId>
-    <version>3.0.0-M5</version>
-    <configuration>
-        <redirectTestOutputToFile>true</redirectTestOutputToFile>
-    </configuration>
-</plugin>
-```
-
-#### Cobertura
-
-```bash
-dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
-```
-
-Test results are typically generated automatically in the Visual Studio Test Platform's TRX format.
-
-#### Jest (JavaScript)
-To generate coverage and test results with Jest, use either JSON or JUnit reporters, depending on your needs.
-
-##### JSON (Default)
-Generate the default JSON coverage and test results:
-```bash
-jest --coverage --json --outputFile=results.json
-```
-For outputFile you can name it anything but please keep it consistent with what you will be providing into the `test_results` field.
-
-##### JUNIT
-To generate both coverage and test results with Jest:
-
-```bash
-jest --coverage --coverageReporters=cobertura --testResultsProcessor=jest-junit
-```
-This example generates coverage using the `cobertura` reporter and formats test results with `jest-junit` for Webhook Reporter to process.
-
-
->`Alias: --collectCoverage. Indicates that test coverage information should be collected and reported in the output. Optionally pass <boolean> to override option set in configuration.`
-
-[more information](https://jestjs.io/docs/cli#--coverageproviderprovider)
-Make sure to install `jest-junit` (`npm install --save-dev jest-junit`) and configure it in your `package.json`:
-
-###### You can specify the file name and location details inside package.json *like* below:
-```json
-"jest-junit": {
-  "outputDirectory": "./test-results",
-  "outputName": "test-results.xml"
-}
-```
-
-## Configuration
+### Parameter Arguements
 
 | Input               | Description                                                      | Required | Default |
 |---------------------|------------------------------------------------------------------|----------|---------|
-| `webhook_url`       | The webhook URL for your messaging platform (Discord, Slack, Teams) | Yes      | N/A     |
-| `provider`          | The messaging platform to send the report to (`discord`, `slack`, `teams`) | Yes      | N/A     |
-| `coverage_file`     | Path to the coverage XML file (e.g., `coverage.xml`)               | Yes      | N/A     |
-| `test_results_file` | Path to the test results XML file (e.g., `test-results.xml`)       | Yes      | N/A     |
+| `webhook_url`       | Webhook URL for the target messaging platform                    | Yes      | N/A     |
+| `provider`          | Messaging platform (`discord`, `slack`, `teams`)                 | Yes      | N/A     |
+| `coverage_file`     | Path to the coverage report (e.g., `coverage.xml`)               | Yes      | N/A     |
+| `test_results_file` | Path to the test results report (e.g., `test-results.xml`)       | No       | N/A     |
+| `coverage_threshold`| The coverage threshold you want to mark against your tests       | No       | N/A     |
 
 
-## Support
-Webhook Reporter supports a variety of testing and coverage frameworks by recognizing common report file formats (e.g., Cobertura, JUnit). This means it works with any framework that outputs these standard formats, even if the framework itself isn't listed explicitly.
+## Framework Setup & Compatibility
 
-### Coverage Report Support
-Webhook Reporter parses coverage reports using these file formats:
-- **Cobertura XML**: Automatically generated by frameworks like Pytest and Jest.
-- **JaCoCo XML**: Typically generated by Java frameworks using JaCoCo.
-- **Clover XML**: Supported for coverage reports produced by Jest.
+Webhook Reporter works with any testing framework that produces standard coverage and test result formats. For comprehensive insights into your project's health, we'll help you generate both coverage and test results files.
 
-### Test Result Report Support
-Webhook Reporter can handle test results in these formats:
-- **JUnit XML**: Used by many frameworks, including JUnit (Java) and others that generate this format.
-- **JSON**: Supported for frameworks like Jest when using the default JSON output.
+### Supported Report Formats
 
-### Example Frameworks:
-- **Pytest**: Coverage generated in Cobertura format (`coverage.xml`); test results can be produced in JUnit XML if needed but are not required.
-- **Jest**: Coverage supported through both Cobertura and Clover formats, with test results in JUnit XML or JSON.
-- **JaCoCo**: Native JaCoCo coverage report format supported.
-- **Unittest**: Test results can be captured via third-party tools that convert output to JUnit XML.
+#### Coverage Reports
+| Format | Description | Common Frameworks |
+|--------|-------------|-------------------|
+| Cobertura XML | Industry-standard coverage format | Pytest, Jest, .NET |
+| JaCoCo XML | Java-ecosystem coverage format | Java frameworks using JaCoCo |
+| Clover XML | Alternative coverage format | Jest, PHP frameworks |
 
-If your framework produces output in one of these formats, it is supported, even if the framework itself is not explicitly listed here.
+#### Test Results
+| Format | Description | Common Frameworks |
+|--------|-------------|-------------------|
+| JUnit XML | Universal test result format | Most testing frameworks |
+| JSON | Modern test output format | Jest, modern JavaScript frameworks |
+
+### Framework Configuration
+
+<details>
+  <summary>JavaScript (Jest)</summary>
+
+  ### Installation
+  First, install the necessary dependencies:
+  ```bash
+  npm install --save-dev jest-junit
+  ```
+
+  ### Configuration
+  Add to your `package.json`:
+  ```json
+  "jest-junit": {
+    "outputDirectory": "./test-results",
+    "outputName": "test-results.xml"
+  }
+  ```
+
+  ### Usage
+  ```bash
+  jest --coverage --coverageReporters=cobertura --testResultsProcessor=jest-junit
+  ```
+
+  This generates:
+  - Coverage report: `coverage/cobertura-coverage.xml`
+  - Test results: `test-results/test-results.xml`
+
+  ### Alternative Coverage Format
+  Jest can also output coverage in Clover format:
+  ```bash
+  jest --coverage --coverageReporters=clover
+  ```
+
+  > **Note:** You only need either Cobertura OR Clover format - pick the one that best suits your needs.
+</details>
+
+<details>
+  <summary>Python (Pytest)</summary>
+
+  ### Installation
+  ```bash
+  pip install pytest-cov pytest-junit
+  ```
+
+  ### Usage
+  ```bash
+  pytest --cov=your_package --cov-report=xml:coverage.xml --junitxml=test-results.xml
+  ```
+
+  This command:
+  - Runs pytest with coverage enabled
+  - Generates Cobertura-compatible coverage report (`coverage.xml`)
+  - Outputs test results in JUnit format (`test-results.xml`)
+  
+  The command will handle both coverage generation and test results output in formats that Webhook Reporter can process.
+</details>
+
+<details>
+  <summary>Java (JaCoCo)</summary>
+
+  Configure your Maven build tool for JaCoCo as follows:
+
+  ```xml
+  <plugin>
+      <groupId>org.jacoco</groupId>
+      <artifactId>jacoco-maven-plugin</artifactId>
+      <version>0.8.7</version>
+      <executions>
+          <execution>
+              <goals>
+                  <goal>prepare-agent</goal>
+              </goals>
+          </execution>
+          <execution>
+              <id>report</id>
+              <phase>test</phase>
+              <goals>
+                  <goal>report</goal>
+              </goals>
+          </execution>
+      </executions>
+  </plugin>
+  ```
+
+  For test results, add the Surefire plugin:
+  ```xml
+  <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <version>3.0.0-M5</version>
+      <configuration>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+      </configuration>
+  </plugin>
+  ```
+
+  ### Usage
+  ```bash
+  mvn clean test
+  ```
+
+  This will generate:
+  - Coverage report in JaCoCo's native XML format: `target/site/jacoco/jacoco.xml`
+  - Test results in JUnit format: `target/surefire-reports/TEST-*.xml`
+</details>
+
+<details>
+  <summary>.NET (Cobertura)</summary>
+
+  ### Installation
+  ```bash
+  dotnet add package coverlet.collector
+  ```
+
+  ### Usage
+  ```bash
+  dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+  ```
+
+  This generates:
+  - Coverage report in Cobertura format: `coverage.cobertura.xml`
+  - Test results are typically generated in the Visual Studio Test Platform's TRX format
+</details>
+
+<details>
+  <summary>Other Frameworks</summary>
+
+  Your framework should output one of these formats:
+  - Coverage: Cobertura XML, JaCoCo XML, or Clover XML
+  - Test Results: JUnit XML or JSON
+
+  Many frameworks can output to these formats through plugins or configuration. If your framework doesn't support these formats directly, consider:
+  1. Looking for coverage/reporting plugins that support these formats
+  2. Using a format converter tool
+  3. Creating a custom reporter that outputs in one of the supported formats
+</details>
 
 ## Contributing
-Contributions are always welcome! If you'd like to contribute:
-### Pre-requisites
-* Get a webhook url to test your changes with.
-
-### Code Review
-1. Clone this repo
-2. Create a new branch (`git checkout -b feature/change-name`)
-    - for example `git checkout -b  feature/coverage-parser-jest`
-3. Make your changes
-4. Open a Pull Request
-For major changes, please open an issue first to discuss your proposal.
+see: [Contribution.md](https://github.com/Moeh-Jama/webhook-reporter/blob/main/Contributions.md)
 
 
-### Generate an .env at root of the folder with following format:
-``` bash
-INPUT_PROVIDER="[PROVIDER NAME]" #discord, slack, teams
-INPUT_WEBHOOK_URL="[WEBHOOK URL]"
-INPUT_COVERAGE_FILE="./data/[COVERAGE-FILE]" # ADD THE EXTENSION
-INPUT_TEST_RESULTS="./data/[TEST-RESULT-FILE-NAME]" # ADD THE EXTENSION
-INPUT_COVERAGE_THRESHOLD=65 # 65 % for example
-GITHUB_REPOSITORY='[USER-NAME/REPO-NAME]'
-GITHUB_SHA='[SOME SHA]'
-GITHUB_REF='refs/pull/38/merge'
-GITHUB_ACTOR='[GITHUB USER-NAME]'
-GITHUB_ACTOR_ID=
-GITHUB_RUN_ID=
-GITHUB_ACTION='random action'
-GITHUB_EVENT_NAME='pull_request'
-```
+
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
